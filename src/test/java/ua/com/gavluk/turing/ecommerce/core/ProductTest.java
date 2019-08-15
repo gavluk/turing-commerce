@@ -15,15 +15,15 @@ class ProductTest {
         ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
         Product x = new Product(
-                5L,
-                "Marianne",
-                "She symbolizes the \"Triumph of the Republic\" and has been depicted many different ways in the history of France, as you will see below!",
-                BigDecimal.valueOf(15.95),
-                BigDecimal.valueOf(14.90), // check for keeping tail zeros!!!
-        "marianne.gif",
-        "marianne-2.gif",
-        "marianne-thumbnail.gif",
-        2
+            5L,
+            "Marianne",
+            "She symbolizes the \"Triumph of the Republic\" and has been depicted many different ways in the history of France, as you will see below!",
+            BigDecimal.valueOf(15.95),
+            BigDecimal.valueOf(14.90), // check for keeping tail zeros!!!
+            "marianne.gif",
+            "marianne-2.gif",
+            "marianne-thumbnail.gif",
+            2
         );
 
         String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(x);

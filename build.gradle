@@ -17,6 +17,7 @@ repositories {
 ext.versions = [
         'springBoot': '2.1.7.RELEASE', // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
         'junit': '5.2.0', // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+        'mysql': '8.0.17', // https://mvnrepository.com/artifact/mysql/mysql-connector-java
 ]
 
 test {
@@ -25,11 +26,11 @@ test {
 
 dependencies {
 
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
-
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
+    
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.17'
 
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit

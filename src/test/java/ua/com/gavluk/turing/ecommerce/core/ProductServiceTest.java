@@ -12,6 +12,8 @@ import ua.com.gavluk.turing.utils.PageableList;
 import ua.com.gavluk.turing.utils.PagingSettings;
 import ua.com.gavluk.turing.utils.SortOrder;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -40,5 +42,14 @@ class ProductServiceTest {
         System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(products));
         assertEquals(1, products.getRows().size(), "Found 5th of 5");
 
+    }
+
+    @Test
+    @Sql("/schema-product.sql")
+    @Sql("/data-product.sql")
+    void test_by_id() throws Exception {
+        Product x = service.findById(1L).orElseThrow(()->new Exception("Product 1 not found"));
+
+        assertEquals(1L, x.getId().longValue());
     }
 }

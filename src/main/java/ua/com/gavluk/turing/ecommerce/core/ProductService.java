@@ -8,6 +8,8 @@ import ua.com.gavluk.turing.utils.PageableList;
 import ua.com.gavluk.turing.utils.PagingSettings;
 import ua.com.gavluk.turing.utils.spring.SpringDataUtils;
 
+import java.util.Optional;
+
 @Service
 public class ProductService {
 
@@ -21,6 +23,10 @@ public class ProductService {
     public PageableList<Product> findAll(PagingSettings paging) {
         Page<Product> all = this.repository.findAll(SpringDataUtils.buildPageable(paging));
         return SpringDataUtils.buildPageableList(all, paging);
+    }
+
+    public Optional<Product> findById(Long id) {
+        return this.repository.findById(id);
     }
 
 }

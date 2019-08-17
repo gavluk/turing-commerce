@@ -6,16 +6,22 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import ua.com.gavluk.turing.ecommerce.utils.BigDecimalMoneySerializer;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name="product")
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class Product {
 
     @Column(name="product_id", unique=true, nullable=false)
+    @Id
     @JsonProperty("product_id")
     private Long id;
 
-    @Column(name="product_id", nullable=false)
+    @Column(name="name", nullable=false)
     @JsonProperty("name")
     private String name;
 
@@ -49,6 +55,10 @@ public class Product {
     @JsonProperty("display")
     // todo: what is 'display'? some enum about how to display? In example it is [0,1,2,3]... convert to enum?
     private Integer display;
+
+    Product() {
+
+    }
 
     /**
      * Non-public constructor for serialization only

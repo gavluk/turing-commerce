@@ -1,4 +1,4 @@
-package ua.com.gavluk.turing.ecommerce.repo;
+package ua.com.gavluk.turing.ecommerce.core.repo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

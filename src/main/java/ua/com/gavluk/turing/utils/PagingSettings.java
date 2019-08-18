@@ -7,12 +7,26 @@ public class PagingSettings {
     private final int limit;
     private final String sortBy;
     private final SortOrder sortOrder;
+    private final boolean withSorting;
+
+    public PagingSettings(long page, int limit) {
+        this.page = page;
+        this.limit = limit;
+        this.withSorting = false;
+        this.sortBy = null;
+        this.sortOrder = null;
+    }
 
     public PagingSettings(long page, int limit, String sortBy, SortOrder sortOrder) {
         this.page = page;
         this.limit = limit;
         this.sortBy = sortBy;
         this.sortOrder = sortOrder;
+        this.withSorting = true;
+    }
+
+    public boolean isWithSorting() {
+        return withSorting;
     }
 
     public long getPage() {

@@ -11,11 +11,19 @@ public class SpringDataUtils {
 
     public static Pageable buildPageable(PagingSettings paging) {
 
-        return PageRequest.of(
-                (int)paging.getPage() - 1, // Spring uses zero-based page index
-                paging.getLimit(),
-                new Sort(Sort.Direction.fromString(paging.getSortOrder().name()), paging.getSortBy())
-        );
+        if (paging.isWithSorting()) {
+            return PageRequest.of(
+                    (int) paging.getPage() - 1, // Spring uses zero-based page index
+                    paging.getLimit(),
+                    new Sort(Sort.Direction.fromString(paging.getSortOrder().name()), paging.getSortBy())
+            );
+        }
+        else {
+            return PageRequest.of(
+                    (int) paging.getPage() - 1, // Spring uses zero-based page index
+                    paging.getLimit()
+            );
+        }
     }
 
     public static <T> PageableList<T> buildPageableList(Page<T> all, PagingSettings originalSetting) {

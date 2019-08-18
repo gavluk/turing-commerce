@@ -56,8 +56,10 @@ public class Product {
     // todo: what is 'display'? some enum about how to display? In example it is [0,1,2,3]... convert to enum?
     private Integer display;
 
+    /**
+     * just for Hibernate serialization
+     */
     Product() {
-
     }
 
     /**
@@ -119,5 +121,10 @@ public class Product {
 
     public Integer getDisplay() {
         return display;
+    }
+
+    public void truncateDescriptionTo(Integer descriptionLength) {
+        if (this.description.length() > descriptionLength)
+            this.description = this.description.substring(0, descriptionLength) + "...";
     }
 }

@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "9e6d188c-08f4-43ab-8a66-b79d734df2a1",
+		"name": "Turing-ECommerce-Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/actuator/health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f27661fd-d91a-4aed-aea1-ef641e08d951",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql('UP');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/actuator/health",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/actuator/info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa6a552c-7d7d-429b-973a-64e033f8052f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/actuator/info",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"actuator",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/1",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/999",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/999",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products?page=2&limit=5",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products?page=2&limit=5",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products?page=1&limit=50&description_length=10",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products?page=99&limit=50&description_length=10",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "99"
+						},
+						{
+							"key": "limit",
+							"value": "50"
+						},
+						{
+							"key": "description_length",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

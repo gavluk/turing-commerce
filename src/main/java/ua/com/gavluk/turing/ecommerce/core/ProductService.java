@@ -68,4 +68,10 @@ public class ProductService {
         PagingSettings allById = new PagingSettings(1, 1000, "category_id", SortOrder.ASC);
         return SpringDataUtils.buildPageableList(categories, allById);
     }
+
+    public PageableList<Product> searchByQuery(String queryString, boolean allWords, PagingSettings pagingSettings) {
+        String[] words = queryString.split("\\s+");
+        Page<Product> products = this.repository.customSearch(words, allWords, SpringDataUtils.buildPageable(pagingSettings));
+        return SpringDataUtils.buildPageableList(products, pagingSettings);
+    }
 }

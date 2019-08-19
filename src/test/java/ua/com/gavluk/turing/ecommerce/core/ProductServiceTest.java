@@ -13,6 +13,7 @@ import ua.com.gavluk.turing.utils.PagingSettings;
 import ua.com.gavluk.turing.utils.SortOrder;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,5 +52,35 @@ class ProductServiceTest {
         Product x = service.findById(1L).orElseThrow(()->new Exception("Product 1 not found"));
 
         assertEquals(1L, x.getId().longValue());
+    }
+
+    @Test
+    @Sql("/schema-product.sql")
+    @Sql("/data-product.sql")
+    void search_by_query_1() throws JsonProcessingException {
+
+        PageableList<Product> found = service.searchByQuery("fancy", true, new PagingSettings(1, 100));
+        assertEquals(1, found.getRows().size(), "Only one test product contains 'fancy'");
+        assertEquals(4L, found.getRows().get(0).getId().longValue(), "this is 4th product");
+
+        found = service.searchByQuery("fancy French", true, new PagingSettings(1, 100));
+        assertEquals(1, found.getRows().size(), "Only one test product contains 'fancy' and 'French");
+        assertEquals(4L, found.getRows().get(0).getId().longValue(), "this is 4th product");
+
+        found = service.searchByQuery("fancy french", true, new PagingSettings(1, 100));
+        assertEquals(1, found.getRows().size(), "Only one test product contains 'fancy' and 'french' ignore case");
+        assertEquals(4L, found.getRows().get(0).getId().longValue(), "this is 4th product");
+
+        found = service.searchByQuery("the all", true, new PagingSettings(1, 100));
+        assertEquals(2, found.getRows().size(), "Two products contain 'the' and 'all' ignore case at the same time");
+        assertArrayEquals(found.getRows().stream().map((x)-> x.getId()).collect(Collectors.toList()).toArray(new Long[0]), new Long[] {2L,4L});
+
+        found = service.searchByQuery("French Merchants", false, new PagingSettings(1, 100));
+        assertEquals(2, found.getRows().size(), "Two different products contain 'Merchants' (2th) and 'French' (4th)");
+        assertArrayEquals(found.getRows().stream().map((x)-> x.getId()).collect(Collectors.toList()).toArray(new Long[0]), new Long[] {2L,4L});
+
+        //ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        //System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(found));
+
     }
 }

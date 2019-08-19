@@ -7,11 +7,10 @@ import ua.com.gavluk.turing.ecommerce.core.Product;
 
 import java.util.Optional;
 
-public interface ProductRepository extends Repository<Product, Long> {
+public interface ProductRepository extends Repository<Product, Long>, ProductRepositoryCustom {
 
     Page<Product> findAll(Pageable pageable);
 
     Optional<Product> findById(Long id);
-
 
 }

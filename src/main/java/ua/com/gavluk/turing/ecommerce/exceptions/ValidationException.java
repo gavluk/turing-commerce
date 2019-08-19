@@ -15,6 +15,9 @@ public class ValidationException extends CommonException {
     public static final Profile BAD_SHIPPIN_REGION_ID   = new Profile(400, "USR_09", "The Shipping Region ID is not number");
     public static final Profile BAD_ID_NOT_NUMBER       = new Profile(400, "DEP_01", "The ID is not a number");
 
+    public static final Profile BAD_PARAMETER       = new Profile(400, "COM_01", "Bad parameter");
+
+
     public ValidationException(Profile profile, String field) {
         super(profile, field);
     }

@@ -161,7 +161,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{turing.api.origin}}/products?page=99&limit=50&description_length=10",
+					"raw": "{{turing.api.origin}}/products?page=2&limit=50&description_length=10",
 					"host": [
 						"{{turing.api.origin}}"
 					],
@@ -171,7 +171,7 @@
 					"query": [
 						{
 							"key": "page",
-							"value": "99"
+							"value": "2"
 						},
 						{
 							"key": "limit",
@@ -180,6 +180,42 @@
 						{
 							"key": "description_length",
 							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/search?query_string=French+beautiful&page=1&limit=5&all_words=off",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"search"
+					],
+					"query": [
+						{
+							"key": "query_string",
+							"value": "French+beautiful"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "all_words",
+							"value": "off"
 						}
 					]
 				}

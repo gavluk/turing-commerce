@@ -1,5 +1,7 @@
 package ua.com.gavluk.turing.utils;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -7,21 +9,25 @@ import java.util.List;
  * Ready to Turing Commerce API format pagination & items container
  * @param <T> type of pageable items
  */
+@JsonInclude(JsonInclude.Include.NON_ABSENT) // to hide paginationMeta if only one page there
 public class PageableList<T> {
 
-    private final PaginationMeta paginationMeta;
+    private PaginationMeta paginationMeta = null;
     private final List<? extends T> items;
 
 
     public PageableList(List<T> items, PagingSettings pagingSettings, long totalItems) {
         this.items = items;
-        this.paginationMeta = new PaginationMeta(
+
+        // as in API requirements: if no pages, no pagination meta
+        if (pagingSettings.getLimit() < totalItems)
+            this.paginationMeta = new PaginationMeta(
                 pagingSettings.getPage(),
                 pagingSettings.getLimit(),
                 totalItems / pagingSettings.getLimit()
                         + (totalItems % pagingSettings.getLimit() > 0 ? 1 : 0),
                 totalItems
-        );
+            );
     }
 
     public PaginationMeta getPaginationMeta() {

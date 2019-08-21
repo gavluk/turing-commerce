@@ -12,12 +12,12 @@ import ua.com.gavluk.turing.utils.PageableList;
 
 @RestController
 @RequestMapping("/categories")
-public class CetegoriesController {
+public class CategoriesController {
 
     private ProductService service;
 
     @Autowired
-    public CetegoriesController(ProductService service) {
+    public CategoriesController(ProductService service) {
         this.service = service;
     }
 

@@ -21,4 +21,8 @@ public class ValidationException extends CommonException {
     public ValidationException(Profile profile, String field) {
         super(profile, field);
     }
+
+    public ValidationException(Profile profile) {
+        super(profile);
+    }
 }

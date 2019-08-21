@@ -24,6 +24,12 @@ Run app
 java -jar ./build/libs/ecommerce-*.jar
 ```
 
+Run original DB script.
+Fix password field lenght:
+```
+ALTER TABLE customer MODIFY COLUMN password varchar(100) NOT NULL;
+```
+
 # Docker
 
 # Releases

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,6 +45,18 @@ public class ControllersAdvice {
         body.put("error", commonEx);
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
     }
+
+    @ResponseBody
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(HttpServletRequest request, MethodArgumentNotValidException ex) {
+        logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+        String badParams = ex.getParameter().getParameterName();
+        CommonException commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
+        HashMap<String, CommonException> body = new HashMap<>();
+        body.put("error", commonEx);
+        return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
+    }
+
 
     @ResponseBody
     @ExceptionHandler(BindException.class)

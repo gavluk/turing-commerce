@@ -6,6 +6,7 @@ public class NotFoundException extends CommonException {
     public static final Profile DEPARTMENT_NOT_FOUND = new Profile(404, "DEP_02", "Don'exist department with this ID");
     public static final Profile PRODUCT_NOT_FOUND = new Profile(404, "PRD_01", "Don'exist product with this ID");
     public static final Profile ATTRIBUTE_NOT_FOUND = new Profile(404, "ATR_01", "Don'exist attribute with this ID");
+    public static final Profile CUSTOMER_NOT_FOUND = new Profile(404, "CST_01", "Don'exist customer with this ID");;
 
     public NotFoundException(Profile profile) {
         super(profile);

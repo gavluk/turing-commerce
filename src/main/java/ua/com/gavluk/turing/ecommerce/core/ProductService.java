@@ -111,11 +111,7 @@ public class ProductService {
         return this.attributeValueRepository.findByAttributeId(attribute.getId());
     }
 
-    public ProductReview postReview(Customer customer, ProductReviewForm form) throws NotFoundException {
-
-        Product product = this.findById(form.getProductId()).orElseThrow(
-                ()-> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
-        );
+    public ProductReview postReview(Customer customer, Product product, ProductReviewForm form) throws NotFoundException {
 
         ProductReview reviewObj = new ProductReview(
                 customer.getId(),

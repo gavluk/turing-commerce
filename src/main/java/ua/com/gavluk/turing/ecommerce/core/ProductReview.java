@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
@@ -18,6 +15,7 @@ public class ProductReview {
 
     @Column(name="review_id", unique=true, nullable=false)
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 
@@ -38,7 +36,7 @@ public class ProductReview {
     @JsonProperty("rating")
     private Integer rating;
 
-    @Column(name="created_od", nullable=false)
+    @Column(name="created_on", nullable=false)
     @JsonProperty("created_on")
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant createdOn;

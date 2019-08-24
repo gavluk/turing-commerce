@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class ProductReviewForm {
 
+    // todo: Q: ask why we need this field here, we already have productId as path-URL var, just ignoring
     private Long productId;
 
     // todo: Q: ask product owner for maximum "relevant" review, now just as big as mysql "text"

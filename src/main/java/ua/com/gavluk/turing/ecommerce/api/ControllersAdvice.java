@@ -1,9 +1,15 @@
 package ua.com.gavluk.turing.ecommerce.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.firewall.RequestRejectedException;
+import org.springframework.security.web.header.writers.XContentTypeOptionsHeaderWriter;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,11 +17,15 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
 import ua.com.gavluk.turing.ecommerce.exceptions.CommonException;
 import ua.com.gavluk.turing.ecommerce.exceptions.InternalErrorException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -23,6 +33,28 @@ import java.util.stream.Collectors;
 public class ControllersAdvice {
 
     private Logger logger = LoggerFactory.getLogger(ControllersAdvice.class);
+
+    static class AuthenticationEntryPointImple implements AuthenticationEntryPoint {
+
+        private final Logger logger;
+
+        public AuthenticationEntryPointImple() {
+            this.logger = LoggerFactory.getLogger(this.getClass());
+        }
+
+        @Override
+        public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex) throws IOException, ServletException {
+            logger.error("Auth error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+            CommonException commonEx = new AuthException(AuthException.ACCESS_UNAUTHORIZED);
+
+            HashMap<String, CommonException> body = new HashMap<>();
+            body.put("error", commonEx);
+
+            response.getWriter().print(new ObjectMapper().writeValueAsString(body));
+            response.setContentType("application/json");
+            response.setStatus(commonEx.getStatus());
+        }
+    }
 
     @ResponseBody
     @ExceptionHandler(Throwable.class)
@@ -34,6 +66,18 @@ public class ControllersAdvice {
         body.put("error", commonEx);
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
     }
+
+/*
+    @ResponseBody
+    @ExceptionHandler(AuthenticationException.class)
+    protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(HttpServletRequest request, AuthenticationException ex) {
+        logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+        CommonException commonEx = new AuthException(AuthException.ACCESS_UNAUTHORIZED);
+        HashMap<String, CommonException> body = new HashMap<>();
+        body.put("error", commonEx);
+        return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
+    }
+*/
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -79,4 +123,5 @@ public class ControllersAdvice {
         body.put("error", commonEx);
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
     }
+
 }

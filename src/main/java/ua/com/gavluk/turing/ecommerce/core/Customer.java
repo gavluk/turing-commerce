@@ -14,9 +14,9 @@ public class Customer {
 
     @Column(name="customer_id", unique=true, nullable=false)
     @Id
-    @JsonProperty("customer_id")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
+    @JsonProperty("customer_id")
+    protected Long id;
 
     @Column(name="name", nullable=false)
     @JsonProperty("name")

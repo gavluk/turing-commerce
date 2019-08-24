@@ -9,6 +9,8 @@ import ua.com.gavluk.turing.ecommerce.core.repo.CustomerRepository;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
+import java.util.Optional;
+
 @Service
 public class CustomerService {
 
@@ -53,5 +55,9 @@ public class CustomerService {
         Customer customer = new Customer(form.getName(), form.getEmail(), encodedPass);
 
         return this.repository.save(customer);
+    }
+
+    public Optional<Customer> findById(Long id) {
+        return this.repository.findById(id);
     }
 }

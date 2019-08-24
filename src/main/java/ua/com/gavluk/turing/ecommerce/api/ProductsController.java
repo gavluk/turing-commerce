@@ -3,6 +3,8 @@ package ua.com.gavluk.turing.ecommerce.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ua.com.gavluk.turing.ecommerce.core.Product;
+import ua.com.gavluk.turing.ecommerce.core.ProductReview;
+import ua.com.gavluk.turing.ecommerce.core.ProductReviewForm;
 import ua.com.gavluk.turing.ecommerce.core.ProductService;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.utils.PageableList;
@@ -42,6 +44,27 @@ public class ProductsController {
         return this.service.findById(id).orElseThrow(
                 () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
         );
+    }
+
+    @GetMapping("/{productId}/reviews")
+    public PageableList<ProductReview> findProductReviews(@PathVariable Long productId, @Valid PagingDTO pagingDTO) throws NotFoundException {
+        Product product = this.service.findById(productId).orElseThrow(
+                () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
+        );
+        return this.service.findProductReviews(product, new PagingSettings(pagingDTO.getPage(), pagingDTO.getLimit()));
+    }
+
+    @PostMapping("/{productId}/reviews")
+    public ProductReview postNewReview(@PathVariable Long productId,
+                                       @Valid @RequestBody ProductReviewForm form,
+                                       CustomerAuthentication authentication
+    ) throws NotFoundException
+    {
+        Product product = this.service.findById(productId).orElseThrow(
+                () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
+        );
+
+        return this.service.postReview(authentication.getCustomer(), product, form);
     }
 
     @GetMapping("/search")

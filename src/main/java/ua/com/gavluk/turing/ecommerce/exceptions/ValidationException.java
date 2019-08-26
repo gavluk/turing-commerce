@@ -1,5 +1,7 @@
 package ua.com.gavluk.turing.ecommerce.exceptions;
 
+import javax.validation.Payload;
+
 public class ValidationException extends CommonException {
 
     public static final Profile BAD_SORT_ORDER          = new Profile(400, "PAG_01", "The order is not matched");
@@ -15,8 +17,9 @@ public class ValidationException extends CommonException {
     public static final Profile BAD_SHIPPIN_REGION_ID   = new Profile(400, "USR_09", "The Shipping Region ID is not number");
     public static final Profile BAD_ID_NOT_NUMBER       = new Profile(400, "DEP_01", "The ID is not a number");
 
-    public static final Profile BAD_PARAMETER          = new Profile(400, "COM_01", "Bad parameter");
-    public static final Profile BAD_REQUEST            = new Profile(400, "COM_02", "Bad request");
+    public static final Profile BAD_PARAMETER           = new Profile(400, "COM_01", "Bad parameter");
+    public static final Profile BAD_REQUEST             = new Profile(400, "COM_02", "Bad request");
+    public static final Profile BAD_FACEBOOK_TOKEN      = new Profile(400, "USR_11", "Bad facebook token");
 
 
     public ValidationException(Profile profile, String field) {
@@ -25,5 +28,15 @@ public class ValidationException extends CommonException {
 
     public ValidationException(Profile profile) {
         super(profile);
+    }
+
+
+    public static class ProfileBuilder implements Payload {
+
+        public Profile buildFromMessage(String message) {
+            String[] msgSpit = message.split(":", 2);
+            String code = msgSpit.length == 2 ? msgSpit[0] : "COM_01";
+            return new Profile(400, code, msgSpit[msgSpit.length-1]);
+        }
     }
 }

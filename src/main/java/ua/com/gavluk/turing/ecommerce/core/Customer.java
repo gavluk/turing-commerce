@@ -143,4 +143,52 @@ public class Customer {
     public String getMobPhone() {
         return mobPhone;
     }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
+    void setDayPhone(String dayPhone) {
+        this.dayPhone = dayPhone;
+    }
+
+    void setEvePhone(String evePhone) {
+        this.evePhone = evePhone;
+    }
+
+    void setMobPhone(String mobPhone) {
+        this.mobPhone = mobPhone;
+    }
+
+    void setAddress1(String address1) {
+        this.address1 = address1;
+    }
+
+    void setAddress2(String address2) {
+        this.address2 = address2;
+    }
+
+    void setCity(String city) {
+        this.city = city;
+    }
+
+    void setRegion(String region) {
+        this.region = region;
+    }
+
+    void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    void setCountry(String country) {
+        this.country = country;
+    }
+
+    void setShippingRegionId(Long shippingRegionId) {
+        this.shippingRegionId = shippingRegionId;
+    }
 }

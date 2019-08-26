@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import ua.com.gavluk.turing.ecommerce.core.repo.CustomerRepository;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
+import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
 import java.util.Optional;
@@ -59,5 +61,59 @@ public class CustomerService {
 
     public Optional<Customer> findById(Long id) {
         return this.repository.findById(id);
+    }
+
+    public Customer updateDetails(Customer customer, CustomerDetailsForm detailsForm) throws ValidationException {
+
+        // check if email is not engaged
+        if ( this.repository.findByEmail(detailsForm.getEmail()).isPresent() ) {
+            throw new ValidationException(ValidationException.EMAIL_EXISTS);
+        }
+
+        customer.setEmail(detailsForm.getEmail());
+        customer.setName(detailsForm.getName());
+        customer.setDayPhone(detailsForm.getDayPhone());
+        customer.setMobPhone(detailsForm.getMobPhone());
+        customer.setEvePhone(detailsForm.getEvePhone());
+
+        return this.repository.save(customer);
+    }
+
+    public Customer updateAddress(Customer customer, CustomerAddressForm addressForm) {
+        // TODO: check if shipping region exists and valid
+
+        customer.setAddress1(addressForm.getAddress1());
+        customer.setAddress2(addressForm.getAddress2());
+        customer.setCity(addressForm.getCity());
+        customer.setRegion(addressForm.getRegion());
+        customer.setCountry(addressForm.getCountry());
+        customer.setShippingRegionId(addressForm.getShippingRegionId());
+
+        return this.repository.save(customer);
+    }
+
+    public Customer authenticateOrRegister(FacebookLoginForm facebookCreds) throws AuthException, ValidationException {
+
+        // e.g. https://graph.facebook.com/me?fields=email,name&access_token=<access-token>
+        RestTemplate rest = new RestTemplate();
+        FacebookProfileInfo fbProfile = rest.getForObject("https://graph.facebook.com/me?fields=email,name&access_token=" + facebookCreds.getAccessToken(), FacebookProfileInfo.class);
+
+        // check if email granted (if not, error)
+        if (fbProfile == null)
+            throw new ValidationException(ValidationException.BAD_FACEBOOK_TOKEN);
+        else if (fbProfile.getEmail() == null)
+            throw new ValidationException(ValidationException.BAD_FACEBOOK_TOKEN, "email");
+
+        // check if email is registered, if so return this customer
+        Optional<Customer> candidate = this.repository.findByEmail(fbProfile.getEmail());
+
+        // if not, register customer without password and return him
+        return  candidate.orElseGet(()-> {
+                Customer newCustomer = new Customer();
+                newCustomer.setEmail(fbProfile.getEmail());
+                newCustomer.setName(fbProfile.getName());
+                this.repository.save(newCustomer);
+                return newCustomer;
+        });
     }
 }

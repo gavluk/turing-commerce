@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ua.com.gavluk.turing.ecommerce.core.AuthenticationForm;
-import ua.com.gavluk.turing.ecommerce.core.Customer;
-import ua.com.gavluk.turing.ecommerce.core.CustomerRegistrationForm;
-import ua.com.gavluk.turing.ecommerce.core.CustomerService;
+import ua.com.gavluk.turing.ecommerce.core.*;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
@@ -49,4 +46,18 @@ public class CustomersController {
     public Customer getCurrentCustomer(CustomerAuthentication authentication) {
         return authentication.getCustomer();
     }
+
+
+    @PostMapping("/facebook")
+    public CustomerAuthenticatedDTO loginAsFacebook(@RequestBody FacebookLoginForm facebookCreds) throws JOSEException, AuthException, ValidationException {
+
+        Customer customer = this.service.authenticateOrRegister(facebookCreds);
+        String token = this.jwtUtils.issuJwtTokenFor(customer);
+
+        JWTClaimsSet jwtClaims = this.jwtUtils.validateToken(token);
+
+        return new CustomerAuthenticatedDTO(customer, token, jwtClaims.getExpirationTime().toInstant());
+    }
+
+
 }

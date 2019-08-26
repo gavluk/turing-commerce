@@ -2,21 +2,13 @@ package ua.com.gavluk.turing.ecommerce.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -38,6 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/stripe/**").hasRole(CustomerAuthentication.ROLE)
                 .antMatchers("/orders/**").hasRole(CustomerAuthentication.ROLE)
                 .antMatchers(HttpMethod.GET, "/customers").hasRole(CustomerAuthentication.ROLE)
+                .antMatchers("/customer").hasRole(CustomerAuthentication.ROLE)
+                .antMatchers("/customer/**").hasRole(CustomerAuthentication.ROLE)
                 .antMatchers(HttpMethod.POST, "/products/*/reviews").hasRole(CustomerAuthentication.ROLE)
 
                 // for all

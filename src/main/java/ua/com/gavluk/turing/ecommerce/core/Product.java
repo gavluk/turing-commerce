@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name="product")
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class Product {
+public class Product extends DbEntity {
 
     @Column(name="product_id", unique=true, nullable=false)
     @Id
@@ -87,6 +87,7 @@ public class Product {
         this.display = display;
     }
 
+    @Override
     public Long getId() {
         return id;
     }

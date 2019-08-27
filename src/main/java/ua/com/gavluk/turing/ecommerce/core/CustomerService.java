@@ -66,15 +66,16 @@ public class CustomerService {
     public Customer updateDetails(Customer customer, CustomerDetailsForm detailsForm) throws ValidationException {
 
         // check if email is not engaged
-        if ( this.repository.findByEmail(detailsForm.getEmail()).isPresent() ) {
-            throw new ValidationException(ValidationException.EMAIL_EXISTS);
+        Customer competitor = this.repository.findByEmail(detailsForm.getEmail()).orElse(customer);
+        if (customer.equals(competitor)) {
+            customer.setEmail(detailsForm.getEmail());
+            customer.setName(detailsForm.getName());
+            customer.setDayPhone(detailsForm.getDayPhone());
+            customer.setMobPhone(detailsForm.getMobPhone());
+            customer.setEvePhone(detailsForm.getEvePhone());
         }
-
-        customer.setEmail(detailsForm.getEmail());
-        customer.setName(detailsForm.getName());
-        customer.setDayPhone(detailsForm.getDayPhone());
-        customer.setMobPhone(detailsForm.getMobPhone());
-        customer.setEvePhone(detailsForm.getEvePhone());
+        else
+            throw new ValidationException(ValidationException.EMAIL_EXISTS);
 
         return this.repository.save(customer);
     }
@@ -87,6 +88,7 @@ public class CustomerService {
         customer.setCity(addressForm.getCity());
         customer.setRegion(addressForm.getRegion());
         customer.setCountry(addressForm.getCountry());
+        customer.setPostalCode(addressForm.getPostalCode());
         customer.setShippingRegionId(addressForm.getShippingRegionId());
 
         return this.repository.save(customer);
@@ -115,5 +117,10 @@ public class CustomerService {
                 this.repository.save(newCustomer);
                 return newCustomer;
         });
+    }
+
+    public Customer updateCreditCard(Customer customer, CreditCardForm creditCardForm) {
+        customer.setCreditCard(creditCardForm.getCreditCard());
+        return this.repository.save(customer);
     }
 }

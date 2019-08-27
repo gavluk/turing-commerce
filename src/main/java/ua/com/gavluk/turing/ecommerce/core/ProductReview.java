@@ -11,7 +11,7 @@ import java.time.Instant;
 @Entity
 @Table(name="review")
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class ProductReview {
+public class ProductReview extends DbEntity {
 
     @Column(name="review_id", unique=true, nullable=false)
     @Id

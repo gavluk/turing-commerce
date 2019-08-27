@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -12,9 +13,11 @@ import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.security.web.header.writers.XContentTypeOptionsHeaderWriter;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
@@ -67,6 +70,29 @@ public class ControllersAdvice {
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
     }
 
+    @ResponseBody
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseEntity<Object> handleMessageNotReadableException(HttpServletRequest request, Throwable ex) {
+        logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+        CommonException commonEx = new ValidationException(ValidationException.BAD_REQUEST, "http_message");
+
+        HashMap<String, CommonException> body = new HashMap<>();
+        body.put("error", commonEx);
+        return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
+    }
+
+
+    @ResponseBody
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupportedException(HttpServletRequest request, Throwable ex) {
+        logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+        CommonException commonEx = new ValidationException(ValidationException.BAD_REQUEST, "http_method");
+
+        HashMap<String, CommonException> body = new HashMap<>();
+        body.put("error", commonEx);
+        return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
+    }
+
 /*
     @ResponseBody
     @ExceptionHandler(AuthenticationException.class)
@@ -94,7 +120,8 @@ public class ControllersAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(HttpServletRequest request, MethodArgumentNotValidException ex) {
         logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
-        String badParams = ex.getParameter().getParameterName();
+        BindingResult result = ex.getBindingResult();
+        String badParams = result.getFieldErrors().stream().map(err -> err.getField()).collect(Collectors.joining(","));
         CommonException commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
         HashMap<String, CommonException> body = new HashMap<>();
         body.put("error", commonEx);

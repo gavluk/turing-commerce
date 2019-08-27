@@ -10,7 +10,7 @@ import javax.validation.constraints.Email;
 @Entity
 @Table(name="customer")
 //@JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class Customer {
+public class Customer extends DbEntity {
 
     @Column(name="customer_id", unique=true, nullable=false)
     @Id
@@ -190,5 +190,10 @@ public class Customer {
 
     void setShippingRegionId(Long shippingRegionId) {
         this.shippingRegionId = shippingRegionId;
+    }
+
+    // todo: check stripe logic do we need fill credit card or masked
+    void setCreditCard(String creditCard) {
+        this.creditCard = creditCard;
     }
 }

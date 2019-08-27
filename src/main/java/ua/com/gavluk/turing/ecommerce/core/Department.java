@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="department")
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-public class Department {
+public class Department extends DbEntity {
 
     @Column(name="department_id", unique=true, nullable=false)
     @Id

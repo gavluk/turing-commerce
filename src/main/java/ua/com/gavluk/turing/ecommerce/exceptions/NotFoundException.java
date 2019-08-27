@@ -8,6 +8,8 @@ public class NotFoundException extends CommonException {
     public static final Profile ATTRIBUTE_NOT_FOUND = new Profile(404, "ATR_01", "Don'exist attribute with this ID");
     public static final Profile CUSTOMER_NOT_FOUND = new Profile(404, "CST_01", "Don'exist customer with this ID");
     public static final Profile CART_ITEM_NOT_FOUND = new Profile(404, "ITM_01", "Don'exist cart item with this ID");
+    public static final Profile TAX_NOT_FOUND = new Profile(404, "TAX_01", "Don'exist tax with this ID");
+    public static final Profile SHIPPING_REGION_NOT_FOUND = new Profile(404, "SHP_01", "Don'exist shipping region with this ID");
 
     public NotFoundException(Profile profile) {
         super(profile);

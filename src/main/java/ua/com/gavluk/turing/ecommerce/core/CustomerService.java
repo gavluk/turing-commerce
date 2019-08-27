@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ua.com.gavluk.turing.ecommerce.core.repo.CustomerRepository;
+import ua.com.gavluk.turing.ecommerce.core.repo.ShippingRegionRepository;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
@@ -20,9 +21,11 @@ public class CustomerService {
     private PasswordEncoder passEncoder;
 
     private final Logger logger;
+    private final ShippingRegionRepository shippingRegionRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository repository, PasswordEncoder passEncoder) {
+    public CustomerService(CustomerRepository repository, PasswordEncoder passEncoder, ShippingRegionRepository shippingRegionRepository) {
+        this.shippingRegionRepository = shippingRegionRepository;
         this.logger = LoggerFactory.getLogger(this.getClass());
         this.repository = repository;
         this.passEncoder = passEncoder;
@@ -39,7 +42,7 @@ public class CustomerService {
 
         if (!passEncoder.matches(authForm.getPassword(), x.getPassword())) {
             logger.warn("Authentication {} failed: user password mismatch", authForm);
-            // todo: store this incident and setup some user locking
+            // todo: Q: should we store this incident and setup some user locking
             throw new AuthException(AuthException.ACCESS_UNAUTHORIZED);
         }
 
@@ -80,8 +83,12 @@ public class CustomerService {
         return this.repository.save(customer);
     }
 
-    public Customer updateAddress(Customer customer, CustomerAddressForm addressForm) {
-        // TODO: check if shipping region exists and valid
+    public Customer updateAddress(Customer customer, CustomerAddressForm addressForm) throws ValidationException {
+
+        this.shippingRegionRepository.findById(addressForm.getShippingRegionId()).orElseThrow(
+                // here might be NotFoundException, but looks like it rather validation of form than finding shipping region
+                ()-> new ValidationException(ValidationException.BAD_PARAMETER, "shipping_region_id")
+        );
 
         customer.setAddress1(addressForm.getAddress1());
         customer.setAddress2(addressForm.getAddress2());

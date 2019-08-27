@@ -11,6 +11,8 @@ import ua.com.gavluk.turing.utils.PageableList;
 import ua.com.gavluk.turing.utils.PagingSettings;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 @RestController
 @RequestMapping("/products")
@@ -30,7 +32,7 @@ public class ProductsController {
             @RequestParam(name = "description_length", defaultValue = "200") Integer descriptionLength
     )
     {
-        // TODO: ask Product owner why there is no sorting requirements
+        // TODO: Q: ask Product owner why there is no sorting requirements
         PageableList<Product> all = this.service.findAll(new PagingSettings(pagingDTO.getPage(), pagingDTO.getLimit()));
 
         // truncating description is not part of service but client-specific, so do it right in controller
@@ -40,14 +42,18 @@ public class ProductsController {
     }
 
     @GetMapping("/{id}")
-    public Product findById(@PathVariable Long id) throws NotFoundException {
+    public Product findById(@PathVariable @Positive @NotNull Long id) throws NotFoundException {
         return this.service.findById(id).orElseThrow(
                 () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
         );
     }
 
     @GetMapping("/{productId}/reviews")
-    public PageableList<ProductReview> findProductReviews(@PathVariable Long productId, @Valid PagingDTO pagingDTO) throws NotFoundException {
+    public PageableList<ProductReview> findProductReviews(
+            @PathVariable @Positive @NotNull Long productId,
+            @Valid PagingDTO pagingDTO
+    ) throws NotFoundException
+    {
         Product product = this.service.findById(productId).orElseThrow(
                 () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
         );
@@ -55,9 +61,10 @@ public class ProductsController {
     }
 
     @PostMapping("/{productId}/reviews")
-    public ProductReview postNewReview(@PathVariable Long productId,
-                                       @Valid @RequestBody ProductReviewForm form,
-                                       CustomerAuthentication authentication
+    public ProductReview postNewReview(
+            @PathVariable @Positive @NotNull Long productId,
+            @Valid @RequestBody ProductReviewForm form,
+            CustomerAuthentication authentication
     ) throws NotFoundException
     {
         Product product = this.service.findById(productId).orElseThrow(

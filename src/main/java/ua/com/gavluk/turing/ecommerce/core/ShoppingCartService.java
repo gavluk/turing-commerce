@@ -3,6 +3,7 @@ package ua.com.gavluk.turing.ecommerce.core;
 import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.ShoppingCartItemRepository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,9 +25,14 @@ public class ShoppingCartService {
     /**
      * 7.2 ADD PRODUCT TO SHOPPING CART
      */
-    public ShoppingCartItem addProductToShoppingCart(String cartId, Product product, String productAttributes, Integer quantity) {
+    public ShoppingCartItem addProductToShoppingCart(UUID cartId, Product product, String productAttributes, Integer quantity) {
         ShoppingCartItem item = new ShoppingCartItem();
-        // todo initialize shopping cart items
+        item.setCartId(cartId);
+        item.setProductId(product.getId());
+        item.setQuantity(quantity);
+        item.setAttributesStr(productAttributes); // todo: try to understand what attributes mean: probably coma-separated values?
+        item.setBuyNow(false); // todo: Q: what is buyNow field?
+        item.setAddedOn(Instant.now());
         return this.repository.save(item);
     }
 

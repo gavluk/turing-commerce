@@ -53,7 +53,7 @@ public class Product extends DbEntity {
 
     @Column(name="display")
     @JsonProperty("display")
-    // todo: what is 'display'? some enum about how to display? In example it is [0,1,2,3]... convert to enum?
+    // todo: Q: what is 'display'? some enum about how to display? In example it is [0,1,2,3]... convert to enum?
     private Integer display;
 
     /**

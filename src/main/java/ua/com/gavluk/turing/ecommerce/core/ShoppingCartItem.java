@@ -47,6 +47,25 @@ public class ShoppingCartItem extends DbEntity {
     }
 
 
+    void setCartId(UUID cartId) {
+        this.cartId = cartId;
+    }
+
+    void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    void setAttributesStr(String attributesStr) {
+        this.attributesStr = attributesStr;
+    }
+
+    void setBuyNow(Boolean buyNow) {
+        this.buyNow = buyNow;
+    }
+
+    void setAddedOn(Instant addedOn) {
+        this.addedOn = addedOn;
+    }
 
     void setQuantity(Integer quantity) {
         this.quantity = quantity;

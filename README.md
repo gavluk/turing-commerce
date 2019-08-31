@@ -24,10 +24,15 @@ Run app
 java -jar ./build/libs/ecommerce-*.jar
 ```
 
-Run original DB script.
-Fix password field lenght:
+Run original DB script. 
+Fix password field length:
 ```
 ALTER TABLE customer MODIFY COLUMN password varchar(100) NOT NULL;
+```
+
+Fix cart ID length (for passing standard UUID): 
+```
+ALTER TABLE shopping_cart MODIFY COLUMN cart_id CHAR(36) NOT NULL;
 ```
 
 # Docker

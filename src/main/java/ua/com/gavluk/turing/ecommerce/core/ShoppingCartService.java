@@ -1,8 +1,10 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.ShoppingCartItemRepository;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -25,22 +27,37 @@ public class ShoppingCartService {
     /**
      * 7.2 ADD PRODUCT TO SHOPPING CART
      */
+    @Transactional
     public ShoppingCartItem addProductToShoppingCart(UUID cartId, Product product, String productAttributes, Integer quantity) {
-        ShoppingCartItem item = new ShoppingCartItem();
-        item.setCartId(cartId);
-        item.setProductId(product.getId());
-        item.setQuantity(quantity);
-        item.setAttributesStr(productAttributes); // todo: try to understand what attributes mean: probably coma-separated values?
-        item.setBuyNow(false); // todo: Q: what is buyNow field?
-        item.setAddedOn(Instant.now());
-        return this.repository.save(item);
+
+        // find if this product having same attributes already added
+        List<ShoppingCartItem> existingItems = this.repository.findByCartIdAndProductId(cartId, product.getId());
+        existingItems.removeIf( (x) -> !x.getAttributesStr().equals(productAttributes) );
+
+        ShoppingCartItem item;
+
+        if (existingItems.isEmpty()) {
+            item = new ShoppingCartItem();
+            item.setCartId(cartId);
+            item.setProductId(product.getId());
+            item.setQuantity(quantity);
+            item.setAttributesStr(productAttributes); // todo: try to understand what attributes mean: probably coma-separated values?
+            item.setBuyNow(false); // todo: Q: what is buyNow field?
+            item.setAddedOn(Instant.now());
+        }
+        else {
+            item = existingItems.get(0);
+            item.setQuantity(item.getQuantity() + quantity);
+        }
+
+        return this.repository.saveAndFlush(item);
     }
 
     /**
      * 7.3 GET LIST OF PRODUCTS IN A SHOPPING CART
      */
     public List<ShoppingCartItem> fetchItemsOf(UUID cartId) {
-        return this.fetchItemsOf(cartId);
+        return this.repository.findByCartId(cartId, Sort.by("id"));
     }
 
 
@@ -54,7 +71,7 @@ public class ShoppingCartService {
      */
     public ShoppingCartItem updateItemQuantity(ShoppingCartItem item, Integer quantity) {
         item.setQuantity(quantity);
-        return this.repository.save(item);
+        return this.repository.saveAndFlush(item);
     }
 
     /**

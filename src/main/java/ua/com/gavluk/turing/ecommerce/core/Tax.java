@@ -1,11 +1,17 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name="tax")
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class Tax extends DbEntity {
 
     @Column(name="tax_id", unique=true, nullable=false)

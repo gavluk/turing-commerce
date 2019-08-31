@@ -2,11 +2,13 @@ package ua.com.gavluk.turing.ecommerce.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.TaxRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TaxService {
     private final TaxRepository repository;
 

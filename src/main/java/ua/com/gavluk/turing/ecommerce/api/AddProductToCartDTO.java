@@ -2,15 +2,15 @@ package ua.com.gavluk.turing.ecommerce.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.UUID;
 
-public class AddProductToCartDto {
+public class AddProductToCartDTO {
 
-    @NotBlank
+    @NotNull
     @JsonProperty("cart_id")
-    private String cartId;
+    private UUID cartId;
 
     @NotNull
     @Positive
@@ -25,11 +25,11 @@ public class AddProductToCartDto {
     @JsonProperty("quantity")
     private Integer quantity;
 
-    public String getCartId() {
+    public UUID getCartId() {
         return cartId;
     }
 
-    public void setCartId(String cartId) {
+    public void setCartId(UUID cartId) {
         this.cartId = cartId;
     }
 

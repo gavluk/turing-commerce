@@ -20,6 +20,7 @@ public class ValidationException extends CommonException {
     public static final Profile BAD_PARAMETER           = new Profile(400, "COM_01", "Bad parameter");
     public static final Profile BAD_REQUEST             = new Profile(400, "COM_02", "Bad request");
     public static final Profile BAD_FACEBOOK_TOKEN      = new Profile(400, "USR_11", "Bad facebook token");
+    public static final Profile SHOPPING_CART_IS_EMPTY = new Profile(400, "ORD_01", "Shopping cart is empty");
 
 
     public ValidationException(Profile profile, String field) {

@@ -31,4 +31,8 @@ public class ShippingService {
     public List<Shipping> findAllInRegion(ShippingRegion region) {
         return this.repository.findByRegionId(region.getId());
     }
+
+    public Optional<Shipping> findById(Long id) {
+        return this.repository.findById(id);
+    }
 }

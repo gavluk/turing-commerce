@@ -10,11 +10,13 @@ import java.util.UUID;
 
 public interface ShoppingCartItemRepository extends Repository<ShoppingCartItem, Long> {
 
-    <S extends ShoppingCartItem> S save(S entity);
+    <S extends ShoppingCartItem> S saveAndFlush(S entity);
 
     Optional<ShoppingCartItem> findById(Long id);
 
-    List<ShoppingCartItem> findByCartId(String cartId, Sort sort);
+    List<ShoppingCartItem> findByCartId(UUID cartId, Sort sort);
 
     void deleteByCartId(UUID cartId);
+
+    List<ShoppingCartItem>  findByCartIdAndProductId(UUID cartId, Long id);
 }

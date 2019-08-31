@@ -1,14 +1,15 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.UUID;
 
+@Entity
+@Table(name="shopping_cart")
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class ShoppingCartItem extends DbEntity {
 
     @Column(name="item_id", unique=true, nullable=false)
@@ -40,6 +41,9 @@ public class ShoppingCartItem extends DbEntity {
     @Column(name="added_on", nullable=false)
     @JsonProperty("added_on")
     private Instant addedOn;
+
+    @Transient
+    private Product product;
 
     @Override
     public Long getId() {
@@ -93,5 +97,13 @@ public class ShoppingCartItem extends DbEntity {
 
     public Instant getAddedOn() {
         return addedOn;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    void setProduct(Product product) {
+        this.product = product;
     }
 }

@@ -2,6 +2,7 @@ package ua.com.gavluk.turing.ecommerce.core;
 
 import java.util.Objects;
 
+
 public abstract class DbEntity {
 
     public abstract Long getId();

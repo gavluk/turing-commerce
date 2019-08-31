@@ -31,14 +31,14 @@ public class ShoppingCartController {
     }
 
     @GetMapping("/generateUniqueId")
-    public String generateShoppingCartUniqueId() {
+    public NewShoppingCartResponseDto generateShoppingCartUniqueId() {
         UUID id = this.service.generateShoppingCartUniqueId();
-        return id.toString();
+        return new NewShoppingCartResponseDto(id);
     }
 
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public ShoppingCartItem addProductToShoppingCart(AddProductToCartDto addingForm) throws NotFoundException {
+    public ShoppingCartItem addProductToShoppingCart(@RequestBody @Valid AddProductToCartDTO addingForm) throws NotFoundException {
 
         Product product = this.productService.findById(addingForm.getProductId()).orElseThrow(
                 ()-> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)
@@ -56,7 +56,7 @@ public class ShoppingCartController {
     @PutMapping("/update/{itemId}")
     public ShoppingCartItem updateShoppingCartItemQuantity(
             @PathVariable @Positive @NotNull Long itemId,
-            @Valid UpdateShoppingCartItemQuantityDto updateDto
+            @RequestBody @Valid UpdateShoppingCartItemQuantityDTO updateDto
     ) throws NotFoundException
     {
 

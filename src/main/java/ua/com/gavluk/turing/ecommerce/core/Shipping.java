@@ -25,7 +25,7 @@ public class Shipping extends DbEntity {
 
     @Column(name="shipping_region_id", nullable=false)
     @JsonProperty("shipping_region_id")
-    private Long shippingRegionId;
+    private Long regionId;
 
     @Override
     public Long getId() {
@@ -40,7 +40,7 @@ public class Shipping extends DbEntity {
         return shippingCost;
     }
 
-    public Long getShippingRegionId() {
-        return shippingRegionId;
+    public Long getRegionId() {
+        return regionId;
     }
 }

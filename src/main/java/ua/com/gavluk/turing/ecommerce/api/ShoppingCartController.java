@@ -1,5 +1,6 @@
 package ua.com.gavluk.turing.ecommerce.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -54,20 +55,19 @@ public class ShoppingCartController {
     }
 
     @PutMapping("/update/{itemId}")
+    @JsonView(ViewProfile.Minimal.class)
     public ShoppingCartItem updateShoppingCartItemQuantity(
             @PathVariable @Positive @NotNull Long itemId,
             @RequestBody @Valid UpdateShoppingCartItemQuantityDTO updateDto
     ) throws NotFoundException
     {
 
-        ShoppingCartItem item = this.service.findSjoppingCartItemById(itemId).orElseThrow(
-                ()-> new NotFoundException(NotFoundException.CART_ITEM_NOT_FOUND)
-        );
+        ShoppingCartItem item = this.service.findShoppingCartItemById(itemId);
 
         return this.service.updateItemQuantity(item, updateDto.getQuantity());
     }
 
-    @DeleteMapping("/shoppingcart/empty/{cartId}")
+    @DeleteMapping("/empty/{cartId}")
     public List<ShoppingCartItem> emptyShoppingCart(@PathVariable UUID cartId) {
         this.service.emptyShoppingCart(cartId);
         return this.service.fetchItemsOf(cartId);
@@ -76,16 +76,11 @@ public class ShoppingCartController {
     @DeleteMapping("/removeProduct/{itemId}")
     public MessageDto deleteItemFromShoppingCart(@PathVariable @Positive @NotNull Long itemId) throws NotFoundException {
 
-        ShoppingCartItem item = this.service.findSjoppingCartItemById(itemId).orElseThrow(
-                () -> new NotFoundException(NotFoundException.CART_ITEM_NOT_FOUND)
-        );
+        ShoppingCartItem item = this.service.findShoppingCartItemById(itemId);
 
-        Optional<Product> productOptional = this.productService.findById(item.getProductId());
+        this.service.removeItem(item);
 
-
-        return productOptional
-                .map(product -> new MessageDto(String.format("You have deleted product '%s' from your cart", product.getName())))
-                .orElseGet(() -> new MessageDto("Item deleted from shopping cart"));
+        return new MessageDto(String.format("You have deleted product '%s' from your cart", item.getProductName()));
     }
 
 /*

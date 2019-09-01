@@ -3,20 +3,24 @@ package ua.com.gavluk.turing.ecommerce.core;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.ShoppingCartItemRepository;
+import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ShoppingCartService {
 
     private final ShoppingCartItemRepository repository;
+    private final ProductService productService;
 
-    public ShoppingCartService(ShoppingCartItemRepository repository) {
+    public ShoppingCartService(ShoppingCartItemRepository repository, ProductService productService) {
         this.repository = repository;
+        this.productService = productService;
     }
 
     public UUID generateShoppingCartUniqueId() {
@@ -57,12 +61,30 @@ public class ShoppingCartService {
      * 7.3 GET LIST OF PRODUCTS IN A SHOPPING CART
      */
     public List<ShoppingCartItem> fetchItemsOf(UUID cartId) {
-        return this.repository.findByCartId(cartId, Sort.by("id"));
+
+        List<ShoppingCartItem> items = this.repository.findByCartId(cartId, Sort.by("id"));
+
+        return items.stream().peek(
+                (x)-> x.setProduct(
+                    this.productService.findById(x.getProductId())
+                        .orElseThrow(()-> new IllegalStateException("product " + x.getProductId() + " not found"))
+                )
+        ).collect(Collectors.toList());
     }
 
 
-    public Optional<ShoppingCartItem> findSjoppingCartItemById(Long itemId) {
-        return this.repository.findById(itemId);
+    public ShoppingCartItem findShoppingCartItemById(Long itemId) throws NotFoundException {
+
+        ShoppingCartItem item = this.repository.findById(itemId).orElseThrow(
+                () -> new NotFoundException(NotFoundException.CART_ITEM_NOT_FOUND)
+        );
+
+        Product product = this.productService.findById(item.getProductId()).orElseThrow(
+                () -> new IllegalStateException("product " + item.getProductId() + " not found")
+        );
+
+        item.setProduct(product);
+        return item;
     }
 
 
@@ -77,9 +99,13 @@ public class ShoppingCartService {
     /**
      * 7.5 EMPTY SHOPPING CART
      */
+    @Transactional
     public void emptyShoppingCart(UUID cartId) {
         this.repository.deleteByCartId(cartId);
     }
 
 
+    public void removeItem(ShoppingCartItem item) {
+        this.repository.deleteById(item.getId());
+    }
 }

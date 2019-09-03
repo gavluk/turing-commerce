@@ -1,7 +1,10 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import ua.com.gavluk.turing.ecommerce.api.ViewProfile;
 import ua.com.gavluk.turing.ecommerce.utils.BigDecimalMoneySerializer;
 
 import javax.persistence.*;
@@ -11,17 +14,21 @@ import static java.util.Optional.ofNullable;
 
 @Entity
 @Table(name="order_detail")
+@JsonView(ViewProfile.Minimal.class)
 public class OrderItem extends DbEntity {
 
     @Column(name="item_id", unique=true, nullable=false)
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @Column(name="order_id", nullable=false)
+    @JsonIgnore
     private Long orderId;
 
     @Column(name="product_id", nullable = false)
+    @JsonProperty("product_id")
     private Long productId;
 
     @Column(name="attributes", nullable=false)
@@ -82,4 +89,11 @@ public class OrderItem extends DbEntity {
     public BigDecimal getUnitCost() {
         return unitCost;
     }
+
+    @JsonProperty("subtotal")
+    @JsonSerialize(using = BigDecimalMoneySerializer.class)
+    public BigDecimal getSubtotal() {
+        return this.unitCost.multiply(BigDecimal.valueOf(this.getQuantity()));
+    }
+
 }

@@ -1,8 +1,6 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import ua.com.gavluk.turing.ecommerce.api.ViewProfile;
 
 import javax.persistence.*;
@@ -14,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name="orders")
+@JsonPropertyOrder({"order_id", "total_amount", "order_items", "created_on", "shipped_on", "status", "name"})
+@JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class Order extends DbEntity {
 
     public static final Integer STATUS_CREATED = 0;
@@ -23,11 +23,13 @@ public class Order extends DbEntity {
     @Column(name="order_id", unique=true, nullable=false)
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @JsonProperty("order_id")
     @JsonView(ViewProfile.Minimal.class)
     private Long id;
 
     @Transient
     @JsonProperty("order_items")
+    @JsonView(ViewProfile.Minimal.class)
     private List<OrderItem> orderItems;
 
     @Transient
@@ -40,6 +42,7 @@ public class Order extends DbEntity {
 
     @Column(name="total_amount", nullable=false)
     @JsonView(ViewProfile.Basic.class)
+    @JsonProperty("total_amount")
     private BigDecimal totalAmount = new BigDecimal(0.00);
 
     @Column(name="created_on", nullable=false)
@@ -94,7 +97,7 @@ public class Order extends DbEntity {
         return customerId;
     }
 
-    void setOrderItems(List items) {
+    void setOrderItems(List<OrderItem> items) {
         this.orderItems = items;
     }
 

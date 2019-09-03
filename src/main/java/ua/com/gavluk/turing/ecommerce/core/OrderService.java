@@ -10,6 +10,7 @@ import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public class OrderService {
         // preliminary save to have order ID for order items
         order = this.repository.save(order);
 
+        BigDecimal total = order.getTotalAmount();
+
         // obtaining product info and build items
         List<OrderItem> orderItems = new ArrayList<>();
         for (ShoppingCartItem cartItem:shoppingCartItems) {
@@ -72,11 +75,31 @@ public class OrderService {
             OrderItem item = new OrderItem(order, cartItem, product);
             item = this.orderItemRepository.save(item);
             orderItems.add(item);
+
+            // calc total
+            total = total.add(cartItem.getSubtotal());
+
         }
         order.setOrderItems(orderItems);
 
+        // adding taxes
+        total = total.add(total.multiply(tax.getTaxPercentage().divide(BigDecimal.valueOf(100))));
+        order.setTotalAmount(total);
+
         order = this.repository.save(order);
 
+        // cleaning shopping cart
+        // todo: Q: is it required to clean it right after order creation?
+        this.cartService.emptyShoppingCart(cartId);
+
+        return order;
+    }
+
+    // 10.1 POST PAYMENT TO STRIPE
+    public Order payOrder(Order order, String stripeToken, String email) {
+        // todo: pay order by stripe
+        // todo: update order status
+        // todo: update order shipping date
         return order;
     }
 

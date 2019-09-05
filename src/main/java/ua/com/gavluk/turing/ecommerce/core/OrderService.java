@@ -1,11 +1,14 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
+import com.stripe.Stripe;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.OrderItemRepository;
 import ua.com.gavluk.turing.ecommerce.core.repo.OrderRepository;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
+import ua.com.gavluk.turing.ecommerce.exceptions.InternalErrorException;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
@@ -14,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,13 +29,21 @@ public class OrderService {
     private final ShoppingCartService cartService;
     private final ProductService productService;
     private final OrderItemRepository orderItemRepository;
+    private final PaymentProvider paymentProvider;
 
     @Autowired
-    public OrderService(OrderRepository repository, ShoppingCartService cartService, ProductService productService, OrderItemRepository orderItemRepository) {
+    public OrderService(OrderRepository repository,
+                        ShoppingCartService cartService,
+                        ProductService productService,
+                        OrderItemRepository orderItemRepository,
+                        PaymentProvider paymentProvider
+    )
+    {
         this.repository = repository;
         this.cartService = cartService;
         this.productService = productService;
         this.orderItemRepository = orderItemRepository;
+        this.paymentProvider = paymentProvider;
     }
 
     /**
@@ -96,11 +108,13 @@ public class OrderService {
     }
 
     // 10.1 POST PAYMENT TO STRIPE
-    public Order payOrder(Order order, String stripeToken, String email) {
-        // todo: pay order by stripe
+    public PaymentStatus payOrder(Order order, PaymentCredentials credentials, Customer customer, String emailToSendReceipt) throws InternalErrorException, ValidationException {
+        // pay order
+        PaymentStatus paymentStatus = this.paymentProvider.pay(order, credentials, customer);
         // todo: update order status
         // todo: update order shipping date
-        return order;
+        // todo: send receipt to given email or if null to customer email
+        return paymentStatus;
     }
 
     /**

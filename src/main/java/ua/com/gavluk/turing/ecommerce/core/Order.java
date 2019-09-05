@@ -157,4 +157,15 @@ public class Order extends DbEntity {
     void setTaxId(Long taxId) {
         this.taxId = taxId;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", customerId=" + customerId +
+                ", totalAmount=" + totalAmount +
+                ", createdOn=" + createdOn +
+                ", status=" + status +
+                '}';
+    }
 }

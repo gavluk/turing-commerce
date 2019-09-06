@@ -192,7 +192,9 @@ public class Customer extends DbEntity {
         this.shippingRegionId = shippingRegionId;
     }
 
-    // todo: check stripe logic do we need fill credit card or masked
+    // stripe needs stripeToken ("source") and to create token we need more then just credit card number
+    // (due date, cvv, etc), so probably we should not manage this credit card in some secure ways,
+    // cause it should be masked short name like *****1234 or like this
     void setCreditCard(String creditCard) {
         this.creditCard = creditCard;
     }

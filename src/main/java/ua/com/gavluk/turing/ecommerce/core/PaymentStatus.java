@@ -3,20 +3,20 @@ package ua.com.gavluk.turing.ecommerce.core;
 public class PaymentStatus {
 
     private final String id;
-    private final boolean succeed;
+    private final boolean succeeded;
     protected String errorKey;
     protected String errorMessage;
 
-    public PaymentStatus(String id, Boolean succeed) {
+    public PaymentStatus(String id, Boolean succeeded) {
         this.id = id;
-        this.succeed = succeed;
+        this.succeeded = succeeded;
         this.errorKey = null;
         this.errorMessage = null;
     }
 
     public PaymentStatus(String id, String errorKey, String errorMessage) {
         this.id = id;
-        this.succeed = false;
+        this.succeeded = false;
         this.errorKey = errorKey;
         this.errorMessage = errorMessage;
     }
@@ -25,8 +25,8 @@ public class PaymentStatus {
         return id;
     }
 
-    public boolean isSucceed() {
-        return succeed;
+    public boolean isSucceeded() {
+        return succeeded;
     }
     public String getErrorKey() {
         return errorKey;

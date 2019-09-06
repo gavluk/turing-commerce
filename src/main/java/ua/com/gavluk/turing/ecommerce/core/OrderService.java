@@ -1,8 +1,9 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
-import com.stripe.Stripe;
+import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.com.gavluk.turing.ecommerce.core.repo.OrderItemRepository;
@@ -12,13 +13,12 @@ import ua.com.gavluk.turing.ecommerce.exceptions.InternalErrorException;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,20 +30,26 @@ public class OrderService {
     private final ProductService productService;
     private final OrderItemRepository orderItemRepository;
     private final PaymentProvider paymentProvider;
+    private final ShippingService shippingService;
+    private final MailingService mailingService;
+    private final Logger logger;
 
     @Autowired
     public OrderService(OrderRepository repository,
                         ShoppingCartService cartService,
                         ProductService productService,
                         OrderItemRepository orderItemRepository,
-                        PaymentProvider paymentProvider
-    )
+                        PaymentProvider paymentProvider,
+                        ShippingService shippingService, MailingService mailingService)
     {
+        this.logger = LoggerFactory.getLogger(this.getClass());
         this.repository = repository;
         this.cartService = cartService;
         this.productService = productService;
         this.orderItemRepository = orderItemRepository;
         this.paymentProvider = paymentProvider;
+        this.shippingService = shippingService;
+        this.mailingService = mailingService;
     }
 
     /**
@@ -96,6 +102,9 @@ public class OrderService {
 
         // adding taxes
         total = total.add(total.multiply(tax.getTaxPercentage().divide(BigDecimal.valueOf(100))));
+        // adding shipment
+        total = total.add(shipping.getShippingCost());
+
         order.setTotalAmount(total);
 
         order = this.repository.save(order);
@@ -111,9 +120,38 @@ public class OrderService {
     public PaymentStatus payOrder(Order order, PaymentCredentials credentials, Customer customer, String emailToSendReceipt) throws InternalErrorException, ValidationException {
         // pay order
         PaymentStatus paymentStatus = this.paymentProvider.pay(order, credentials, customer);
-        // todo: update order status
-        // todo: update order shipping date
-        // todo: send receipt to given email or if null to customer email
+
+        if (paymentStatus.isSucceeded()) {
+
+            // update order status
+            order.setStatus(Order.STATUS_PAYED);
+
+            // update order shipping date
+            Long shippingId = order.getShippingId();
+            Long orderId = order.getId();
+            Shipping shipping = this.shippingService.findById(shippingId).orElseThrow(
+                    ()->new IllegalStateException("Shipping #" + shippingId + " not found for order #" + orderId)
+            );
+            // todo: Q: do we need to update shipped_on date when order is payed? how to calculate that?
+            order.setShippedOn(Instant.now());
+
+            order = this.repository.save(order);
+        }
+
+        // notify happy or sad mail
+        Order finalOrder = order;
+        try {
+            this.mailingService.send(
+                    customer,
+                    paymentStatus.isSucceeded() ? "order_is_payed" : "order_is_not_payed",
+                    new HashMap<String, Object>() {{
+                        put("order", finalOrder);
+                        put("paymentStatus", paymentStatus);
+                    }});
+        } catch (Exception e) {
+            this.logger.error("Unable to send mail to " + customer + " about " + order + " have payment status " + paymentStatus, e);
+        }
+
         return paymentStatus;
     }
 

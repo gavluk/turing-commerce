@@ -158,6 +158,30 @@ public class Order extends DbEntity {
         this.taxId = taxId;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public String getAuthCode() {
+        return authCode;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public Long getShippingId() {
+        return shippingId;
+    }
+
+    public Long getTaxId() {
+        return taxId;
+    }
+
     @Override
     public String toString() {
         return "Order{" +

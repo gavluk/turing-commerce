@@ -10,7 +10,7 @@ public class StripePaymentStatus extends PaymentStatus {
 
     public StripePaymentStatus(Charge charge) {
         super(charge.getId(), STATUS_SUCCEED.equals(charge.getStatus()));
-        if (!this.isSucceed()) {
+        if (!this.isSucceeded()) {
             this.errorKey = charge.getFailureCode();
             this.errorMessage = charge.getFailureMessage();
         }

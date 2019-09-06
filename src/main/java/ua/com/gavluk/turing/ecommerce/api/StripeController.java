@@ -46,7 +46,7 @@ public class StripeController {
 
         return new StripeChargeResponseDto(
                 (StripePaymentStatus) paymentStatus,
-                String.format("Payment is %s", paymentStatus.isSucceed() ? "succeed" : "fail")
+                String.format("Payment is %s", paymentStatus.isSucceeded() ? "succeed" : "fail")
         );
     }
 

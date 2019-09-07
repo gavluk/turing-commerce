@@ -59,7 +59,7 @@ public class Order extends DbEntity {
     @Column(name="status", nullable = false)
     @Min(0)
     @Max(5)
-    @JsonIgnore
+    @JsonView(ViewProfile.Basic.class)
     private Integer status;
 
     @Column(name="comments")

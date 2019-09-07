@@ -53,6 +53,7 @@ public class OrdersController {
     }
 
     @GetMapping("/shortDetail/{id}")
+    @JsonView(ViewProfile.Full.class)
     public Order findShortDetailedOrder(@PathVariable @Positive Long id, CustomerAuthentication auth) throws AuthException, NotFoundException {
         return this.service.findById(auth.getCustomer(), id);
     }

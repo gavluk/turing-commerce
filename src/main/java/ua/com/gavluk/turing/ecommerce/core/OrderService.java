@@ -1,6 +1,5 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
-import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,7 @@ import ua.com.gavluk.turing.ecommerce.exceptions.InternalErrorException;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
@@ -24,6 +21,12 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
+
+    public static final String MAIL_TEMPLATE_ORDER_IS_PAYED = "order_is_payed";
+    public static final String MAIL_TEMPLATE_ORDER_IS_NOT_PAYED = "order_is_not_payed";
+    public static final String MAIL_CONTENT_KEY_OF_ORDER = "order";
+    public static final String MAIL_CONTENT_KEY_OF_PAYMENT_STATUS = "paymentStatus";
+    public static final String MAIL_CONTENT_KEY_OF_SHIPPING = "shipping";
 
     private final OrderRepository repository;
     private final ShoppingCartService cartService;
@@ -117,7 +120,8 @@ public class OrderService {
     }
 
     // 10.1 POST PAYMENT TO STRIPE
-    public PaymentStatus payOrder(Order order, PaymentCredentials credentials, Customer customer, String emailToSendReceipt) throws InternalErrorException, ValidationException {
+    public PaymentStatus payOrder(Order order, PaymentCredentials credentials, Customer customer, String emailToSendReceipt)
+            throws InternalErrorException, ValidationException {
         // pay order
         PaymentStatus paymentStatus = this.paymentProvider.pay(order, credentials, customer);
 
@@ -139,14 +143,25 @@ public class OrderService {
         }
 
         // notify happy or sad mail
+
+        // load details to be possible use it in mail templates
+        if (order.getOrderItems() == null) {
+            List<OrderItem> items = this.orderItemRepository.findByOrderId(order.getId());
+            order.setOrderItems(items);
+        }
+
         Order finalOrder = order;
+        Shipping shipping = this.shippingService.findById(order.getShippingId()).orElseThrow(
+                ()-> new IllegalStateException("Cannot find shipping " + finalOrder.getShippingId() + " of order " + finalOrder.getId())
+        );
         try {
             this.mailingService.send(
                     customer,
-                    paymentStatus.isSucceeded() ? "order_is_payed" : "order_is_not_payed",
+                    paymentStatus.isSucceeded() ? MAIL_TEMPLATE_ORDER_IS_PAYED : MAIL_TEMPLATE_ORDER_IS_NOT_PAYED,
                     new HashMap<String, Object>() {{
-                        put("order", finalOrder);
-                        put("paymentStatus", paymentStatus);
+                        put(MAIL_CONTENT_KEY_OF_ORDER, finalOrder);
+                        put(MAIL_CONTENT_KEY_OF_PAYMENT_STATUS, paymentStatus);
+                        put(MAIL_CONTENT_KEY_OF_SHIPPING, shipping);
                     }});
         } catch (Exception e) {
             this.logger.error("Unable to send mail to " + customer + " about " + order + " have payment status " + paymentStatus, e);

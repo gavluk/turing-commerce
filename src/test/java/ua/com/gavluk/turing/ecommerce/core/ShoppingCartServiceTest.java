@@ -41,7 +41,6 @@ class ShoppingCartServiceTest {
         x = service.addProductToShoppingCart(cartId, product, "1", 10);
         assertEquals(13, x.getQuantity().intValue(), "Merging  product");
 
-
     }
 
 

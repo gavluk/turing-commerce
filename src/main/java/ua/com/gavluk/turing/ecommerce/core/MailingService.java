@@ -19,6 +19,8 @@ import java.util.Properties;
 @Service
 public class MailingService {
 
+    public static final String CONTENT_KEY_OF_CUSTOMER = "customer";
+
     private final Configuration freemakerConfig;
     private final JavaMailSender mailSender;
     private final Properties subjects;
@@ -43,14 +45,14 @@ public class MailingService {
 
         // creating new hashmap to do not touch input parameter
         Map<String, Object> content = new HashMap<>(payloads);
-        content.put("customer", customer);
+        content.put(CONTENT_KEY_OF_CUSTOMER, customer);
 
         MimeMessage msg = this.mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(emailAddressToSend);
         helper.setSubject(this.subjects.getProperty(template));
 
-        Template tpl = this.freemakerConfig.getTemplate(template);
+        Template tpl = this.freemakerConfig.getTemplate(template + ".ftl");
         StringWriter body = new StringWriter();
         tpl.process(content, body);
         helper.setText(body.toString(), true);

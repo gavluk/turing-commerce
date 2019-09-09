@@ -1,11 +1,9 @@
 package ua.com.gavluk.turing.ecommerce.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ua.com.gavluk.turing.ecommerce.core.Product;
-import ua.com.gavluk.turing.ecommerce.core.ProductReview;
-import ua.com.gavluk.turing.ecommerce.core.ProductReviewForm;
-import ua.com.gavluk.turing.ecommerce.core.ProductService;
+import ua.com.gavluk.turing.ecommerce.core.*;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.utils.PageableList;
 import ua.com.gavluk.turing.utils.PagingSettings;
@@ -27,6 +25,7 @@ public class ProductsController {
     }
 
     @GetMapping
+    @JsonView(ViewProfile.Basic.class)
     public PageableList<Product> findAll(
             @Valid PagingDTO pagingDTO,
             @RequestParam(name = "description_length", defaultValue = "200") Integer descriptionLength
@@ -36,12 +35,56 @@ public class ProductsController {
         PageableList<Product> all = this.service.findAll(new PagingSettings(pagingDTO.getPage(), pagingDTO.getLimit()));
 
         // truncating description is not part of service but client-specific, so do it right in controller
-        all.getRows().stream().forEach((x) -> x.truncateDescriptionTo(descriptionLength));
+        all.getRows().forEach((x) -> x.truncateDescriptionTo(descriptionLength));
+
+        return all;
+    }
+
+    @GetMapping("/inCategory/{categoryId}")
+    @JsonView(ViewProfile.Basic.class)
+    public PageableList<Product> findAllInCategory(
+            @PathVariable @Positive Long categoryId,
+            @Valid PagingDTO pagingDTO,
+            @RequestParam(name = "description_length", defaultValue = "200") Integer descriptionLength
+    ) throws NotFoundException
+    {
+        Category category = this.service.findCategoryById(categoryId).orElseThrow(
+                () -> new NotFoundException(NotFoundException.CATEGORY_NOT_FOUND)
+        );
+
+        PageableList<Product> all = this.service.findByCategories(new PagingSettings(pagingDTO.getPage(), pagingDTO.getLimit()), category);
+
+        all.getRows().forEach((x) -> x.truncateDescriptionTo(descriptionLength));
+
+        return all;
+    }
+
+
+    @GetMapping("/inDepartment/{departmentId}")
+    @JsonView(ViewProfile.Basic.class)
+    public PageableList<Product> findAllInDepartment(
+            @PathVariable @Positive Long departmentId,
+            @Valid PagingDTO pagingDTO,
+            @RequestParam(name = "description_length", defaultValue = "200") Integer descriptionLength
+    ) throws NotFoundException
+    {
+        Department department = this.service.findDepartmentById(departmentId).orElseThrow(
+                () -> new NotFoundException(NotFoundException.DEPARTMENT_NOT_FOUND)
+        );
+        PageableList<Category> categoriesPageableList = this.service.findAllCategoriesInDepartment(department);
+
+        PageableList<Product> all = this.service.findByCategories(
+                new PagingSettings(pagingDTO.getPage(), pagingDTO.getLimit()),
+                categoriesPageableList.getRows().toArray(new Category[] {})
+        );
+
+        all.getRows().forEach((x) -> x.truncateDescriptionTo(descriptionLength));
 
         return all;
     }
 
     @GetMapping("/{id}")
+    @JsonView(ViewProfile.Full.class)
     public Product findById(@PathVariable @Positive @NotNull Long id) throws NotFoundException {
         return this.service.findById(id).orElseThrow(
                 () -> new NotFoundException(NotFoundException.PRODUCT_NOT_FOUND)

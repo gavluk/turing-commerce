@@ -48,4 +48,11 @@ public class CustomerAuthentication extends AbstractAuthenticationToken{
     public Customer getCustomer() {
         return customer;
     }
+
+    @Override
+    public String toString() {
+        return "CustomerAuthentication{" +
+                "customer=" + customer +
+                '}';
+    }
 }

@@ -11,6 +11,7 @@ import ua.com.gavluk.turing.utils.PagingSettings;
 import ua.com.gavluk.turing.utils.SortOrder;
 import ua.com.gavluk.turing.utils.spring.SpringDataUtils;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -50,10 +51,24 @@ public class ProductService {
     }
 
     /**
+     * 4.4 GET ALL PRODUCTS IN A CATEGORY
+     */
+    public PageableList<Product> findByCategories(PagingSettings paging, Category... categories) {
+        Page<Product> all = this.repository.findByCategoriesIn(categories, SpringDataUtils.buildPageable(paging));
+        return SpringDataUtils.buildPageableList(all, paging);
+    }
+
+    /**
      * 4.3 GET A SINGLE PRODUCT
      */
+    @Transactional
     public Optional<Product> findById(Long id) {
-        return this.repository.findById(id);
+        Optional<Product> optProduct = this.repository.findById(id);
+        // if asking only one product, calling lazy fetching of attributes
+        optProduct.ifPresent((x) -> {
+            x.getAttributeValues().size();
+        });
+        return optProduct;
     }
 
     /**
@@ -68,6 +83,11 @@ public class ProductService {
      */
     public Optional<Attribute> findAttributeById(Long id) {
         return this.attributeRepository.findById(id);
+    }
+
+
+    public List<Department> findAllDepartmens() {
+        return this.departmentRepository.findAll();
     }
 
     /**
@@ -86,6 +106,10 @@ public class ProductService {
         String[] words = queryString.split("\\s+");
         Page<Product> products = this.repository.customSearch(words, allWords, SpringDataUtils.buildPageable(pagingSettings));
         return SpringDataUtils.buildPageableList(products, pagingSettings);
+    }
+
+    public Optional<Department> findDepartmentById(Long departmentId) {
+        return this.departmentRepository.findById(departmentId);
     }
 
     /**
@@ -128,4 +152,5 @@ public class ProductService {
         Page<ProductReview> reviews = this.productReviewRepository.findByProductId(product.getId(), SpringDataUtils.buildPageable(pagingSettings));
         return SpringDataUtils.buildPageableList(reviews, pagingSettings);
     }
+
 }

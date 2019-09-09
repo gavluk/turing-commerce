@@ -28,7 +28,7 @@ public class Category extends DbEntity {
 
     @Column(name="department_id", nullable=false)
     @JsonProperty("department_id")
-    private String departmentId;
+    private Long departmentId;
 
     /**
      * Hibernate serialization
@@ -36,7 +36,7 @@ public class Category extends DbEntity {
     Category() {
     }
 
-    Category(Long id, String name, String description, String departmentId) {
+    Category(Long id, String name, String description, Long departmentId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -55,7 +55,7 @@ public class Category extends DbEntity {
         return description;
     }
 
-    public String getDepartmentId() {
+    public Long getDepartmentId() {
         return departmentId;
     }
 }

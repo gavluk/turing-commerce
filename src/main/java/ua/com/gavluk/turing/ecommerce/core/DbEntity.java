@@ -19,4 +19,11 @@ public abstract class DbEntity {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" +
+                "id=" + this.getId() +
+                "}";
+    }
 }

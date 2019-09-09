@@ -198,4 +198,12 @@ public class Customer extends DbEntity {
     void setCreditCard(String creditCard) {
         this.creditCard = creditCard;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

@@ -35,4 +35,12 @@ public class PaymentStatus {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{" +
+                "succeeded=" + succeeded +
+                ", errorKey='" + errorKey + '\'' +
+                '}';
+    }
 }

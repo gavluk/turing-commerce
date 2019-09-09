@@ -12,6 +12,7 @@ import ua.com.gavluk.turing.utils.PageableList;
 import ua.com.gavluk.turing.utils.PagingSettings;
 import ua.com.gavluk.turing.utils.SortOrder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,6 +82,22 @@ class ProductServiceTest {
 
         //ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
         //System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(found));
+    }
+
+    @Test
+    @Sql("/schema-product.sql")
+    @Sql("/data-product.sql")
+    @Sql("/attributes.sql")
+    void load_attribute_values() throws Exception {
+        Product x = service.findById(1L).orElseThrow(
+                ()->new Exception("Product 1 not found")
+        );
+
+        List<AttributeValue> attributeValues = x.getAttributeValues();
+
+        System.out.println(attributeValues);
+
+        assertTrue(attributeValues.size() > 0);
 
     }
 }

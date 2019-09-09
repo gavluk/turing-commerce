@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
 import ua.com.gavluk.turing.ecommerce.core.Product;
 
 import javax.persistence.EntityManager;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
-    EntityManager em;
+    private final EntityManager em;
 
     @Autowired
     public ProductRepositoryCustomImpl(EntityManager em) {
@@ -38,10 +37,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         Predicate finalPredicate;
 
-        for (int i = 0; i < words.length; i++) {
-            Predicate nameHasWord = cb.like(cb.lower(from.get("name")), "%" + words[i].toLowerCase() + "%");
-            Predicate descHasWord = cb.like(cb.lower(from.get("description")), "%" + words[i].toLowerCase() + "%");
-            predicates.add( cb.or(nameHasWord, descHasWord) );
+        for (String word : words) {
+            Predicate nameHasWord = cb.like(cb.lower(from.get("name")), "%" + word.toLowerCase() + "%");
+            Predicate descHasWord = cb.like(cb.lower(from.get("description")), "%" + word.toLowerCase() + "%");
+            predicates.add(cb.or(nameHasWord, descHasWord));
         }
 
         if (allWords)

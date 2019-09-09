@@ -96,4 +96,12 @@ public class OrderItem extends DbEntity {
         return this.unitCost.multiply(BigDecimal.valueOf(this.getQuantity()));
     }
 
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "productId=" + productId +
+                ", productName='" + productName + '\'' +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

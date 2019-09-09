@@ -149,4 +149,12 @@ public class ShoppingCartItem extends DbEntity {
         return this.product == null ? null : this.getProductPrice().multiply(BigDecimal.valueOf(this.getQuantity()));
     }
 
+    @Override
+    public String toString() {
+        return "ShoppingCartItem{" +
+                "cartId=" + cartId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

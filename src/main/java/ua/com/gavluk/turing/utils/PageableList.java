@@ -1,6 +1,8 @@
 package ua.com.gavluk.turing.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonView;
+import ua.com.gavluk.turing.ecommerce.api.ViewProfile;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  * @param <T> type of pageable items
  */
 @JsonInclude(JsonInclude.Include.NON_ABSENT) // to hide paginationMeta if only one page there
+@JsonView(ViewProfile.Minimal.class)
 public class PageableList<T> {
 
     private PaginationMeta paginationMeta = null;
@@ -38,6 +41,7 @@ public class PageableList<T> {
         return Collections.unmodifiableList(this.items) ;
     }
 
+    @JsonView(ViewProfile.Minimal.class)
     static class PaginationMeta {
         long currentPage;
         int currentPageSize;

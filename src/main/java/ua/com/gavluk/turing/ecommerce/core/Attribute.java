@@ -3,10 +3,8 @@ package ua.com.gavluk.turing.ecommerce.core;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="attribute")
@@ -22,6 +20,11 @@ public class Attribute {
     @JsonProperty("name")
     private String name;
 
+/*
+    @OneToMany(mappedBy = "attribute")
+    private List<AttributeValue> attributeValues;
+*/
+
     Attribute() {
     }
 
@@ -36,5 +39,13 @@ public class Attribute {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Attribute{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

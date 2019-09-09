@@ -10,6 +10,8 @@ import ua.com.gavluk.turing.ecommerce.core.ProductService;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
 import ua.com.gavluk.turing.utils.PageableList;
 
+import javax.validation.constraints.Positive;
+
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
@@ -27,7 +29,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/{id}")
-    public Category findById(@PathVariable Long id) throws NotFoundException {
+    public Category findById(@PathVariable @Positive Long id) throws NotFoundException {
         return this.service.findCategoryById(id).orElseThrow(
                 ()-> new NotFoundException(NotFoundException.CATEGORY_NOT_FOUND)
         );

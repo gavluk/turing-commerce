@@ -36,6 +36,7 @@ Summary:
 
 ## Building the project 
 ```
+git clone https://github.com/gavluk/turing-commerce.git
 ./gradlew clean build
 ```
 

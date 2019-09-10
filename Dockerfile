@@ -1,3 +1,6 @@
 FROM openjdk:8
-COPY ./build/libs/*.jar /app.jar
+COPY . /project
+RUN cd /project
+RUN cd /project ; ./gradlew clean build
+RUN cp /project/build/libs/*.jar /app.jar
 CMD ["java", "-jar", "/app.jar"]

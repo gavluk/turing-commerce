@@ -1,0 +1,940 @@
+{
+	"info": {
+		"_postman_id": "9e6d188c-08f4-43ab-8a66-b79d734df2a1",
+		"name": "Turing-ECommerce-Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/actuator/health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f27661fd-d91a-4aed-aea1-ef641e08d951",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Your test name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql('UP');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/actuator/health",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/actuator/info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa6a552c-7d7d-429b-973a-64e033f8052f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/actuator/info",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"actuator",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a8c9586d-3519-40f7-ac04-e219ad205321",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows.length).to.eql(20);",
+							"    ",
+							"    pm.globals.set(\"productId\", jsonData.rows[0].product_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12f060ea-d1b3-4f59-947f-89efcb8efe3d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.product_id).is.not.undefined;",
+							"",
+							"    pm.expect(jsonData.product_id).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"productId\", jsonData.product_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/1",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/999",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0def6b88-f757-4549-9fc9-1fa617d05346",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/999",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products?page=2&limit=5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af204ea9-ae0a-4956-81d3-6299b6904b3a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows.length).to.eql(5);",
+							"    ",
+							"    pm.globals.set(\"productId\", jsonData.rows[0].product_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products?page=2&limit=5",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products?page=1&limit=50&description_length=10",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "af133f6f-59d3-4f00-ada6-2c1597c175e9",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows.length).to.eql(50);",
+							"    ",
+							"    pm.globals.set(\"productId\", jsonData.rows[0].product_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products?page=2&limit=50&description_length=10",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2"
+						},
+						{
+							"key": "limit",
+							"value": "50"
+						},
+						{
+							"key": "description_length",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/search",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "37dd2038-8a8a-42ab-92fd-b7ed3f04ca96",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows.length).to.eql(5);",
+							"    ",
+							"    pm.globals.set(\"productId\", jsonData.rows[0].product_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/search?query_string=French+beautiful&page=1&limit=5&all_words=off",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"search"
+					],
+					"query": [
+						{
+							"key": "query_string",
+							"value": "French+beautiful"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "all_words",
+							"value": "off"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/categories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0395c36b-f91d-45a5-9ade-3fda259b252c",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows.length).is.at.least(3);",
+							"    ",
+							"    pm.globals.set(\"ctegoryId\", jsonData.rows[0].category_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/categories",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/categories/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8f7c03f8-d8c1-4164-926e-9e9c96ec9924",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.category_id).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"ctegoryId\", jsonData.category_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/categories/1",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"categories",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/categories/9999",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fd18f424-c16e-42a3-9870-70a32905ac48",
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/categories/9999",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"categories",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4bf8468a-1b6d-4ff5-898e-1f9c853ce942",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some items\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"attributeId\", jsonData[0].attributeId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/attributes",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/attributes/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "469cd18b-789a-4e53-b60a-ca84858419e5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have attribute\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.attribute_id).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"attributeId\", jsonData.attributeId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/attributes/1",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"attributes",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/attributes/1abc",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ef1cf35-4697-4b87-a817-dc781c13fc6e",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Bad ID field\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error.field).is.eq(\"id\");",
+							"    ",
+							"    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/attributes/1abc",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"attributes",
+						"1abc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/attributes/values/1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3dfc37b1-ec73-4637-8ac8-3cc7d565b666",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some items\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"attributeValueId\", jsonData[0].attributeValueId);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/attributes/values/1",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"attributes",
+						"values",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customers",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Alex Gavluk2\",\n     \"email\": \"gavluk2@gmail.com\",\n     \"password\": \"Qwerty123!\"\n}"
+				},
+				"url": {
+					"raw": "{{turing.api.origin}}/customers",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customers/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "81954e15-376a-4231-b6e7-38da17d892e5",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Check if token here\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.accessToken).to.not.undefined;",
+							"    pm.globals.set(\"token\", jsonData.accessToken);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n     \"email\": \"gavluk@gmail.com\",\n     \"password\": \"Qwerty123!\"\n}"
+				},
+				"url": {
+					"raw": "{{turing.api.origin}}/customers/login",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"customers",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eab7046e-c765-4538-8ad1-e21d0cc6cae9",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some customer\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.customer_id).is.at.least(1);",
+							"    ",
+							"    pm.globals.set(\"customerId\", jsonData.customer_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "USER-KEY",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{turing.api.origin}}/customers",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/customers (bad signature)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eab7046e-c765-4538-8ad1-e21d0cc6cae9",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Have some customer\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error.code).is.not.undefined;",
+							"    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "USER-KEY",
+						"type": "text",
+						"value": "Bearer bad{{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{turing.api.origin}}/customers",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1/reviews",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12f060ea-d1b3-4f59-947f-89efcb8efe3d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.created_on).is.not.undefined;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "USER-KEY",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"review\": \"Really great product\",\n\t\"rating\": 4\n}"
+				},
+				"url": {
+					"raw": "{{turing.api.origin}}/products/{{productId}}/reviews",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"{{productId}}",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1/reviews  (unauthorized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12f060ea-d1b3-4f59-947f-89efcb8efe3d",
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});",
+							"",
+							"pm.test(\"Have right error format\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.error.code).is.not.undefined;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "USER-KEY",
+						"type": "text",
+						"value": "Bearer {{token}}",
+						"disabled": true
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"review\": \"Really great product\",\n\t\"rating\": 5\n}"
+				},
+				"url": {
+					"raw": "{{turing.api.origin}}/products/{{productId}}/reviews",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"{{productId}}",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1/reviews",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "12f060ea-d1b3-4f59-947f-89efcb8efe3d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Have some products\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.rows[0].created_on).is.not.undefined;",
+							" ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{turing.api.origin}}/products/{{productId}}/reviews",
+					"host": [
+						"{{turing.api.origin}}"
+					],
+					"path": [
+						"products",
+						"{{productId}}",
+						"reviews"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

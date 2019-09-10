@@ -34,23 +34,14 @@ Summary:
 
 # Install
 
-## Building the project 
-```
-git clone https://github.com/gavluk/turing-commerce.git
-./gradlew clean build
-```
-
-## Running app 
-
-### Running for development with docker-compose
+## Running for development with docker-compose
 
 ```
-# do it only AFTER you build the project!
 docker-compose up
 ```
 
 It will run three containers:
-* backend app itself, which will be built from `Dockerfile` at the root of project
+* backend app itself (it builds it and run), which will be built from `Dockerfile` at the root of project
 * db server with initial dump (original + fields length fixes for password and cart id)
 * fake smtp server
 
@@ -72,7 +63,12 @@ docker-composer on localhost, ALL postman tests must be "green".
 *You must call `docker-compose rm ; docker-compose up` to make all postman tests be "green".*
 
 
-### Custom deployment / running
+## Custom deployment / running
+
+```
+git clone https://github.com/gavluk/turing-commerce.git
+./gradlew clean build
+```
 
 Set essential environment variables for DB connection and server port (default 8080)
 ```

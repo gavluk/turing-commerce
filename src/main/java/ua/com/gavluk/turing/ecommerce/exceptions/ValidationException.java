@@ -14,13 +14,14 @@ public class ValidationException extends CommonException {
     public static final Profile BAD_PHONE               = new Profile(400, "USR_06", "this is an invalid phone number");
     public static final Profile FIELD_TOO_LONG          = new Profile(400, "USR_07", "this is too long <FIELD NAME>");
     public static final Profile BAD_CREDIT_CARD         = new Profile(400, "USR_08", "this is an invalid Credit Card");
-    public static final Profile BAD_SHIPPIN_REGION_ID   = new Profile(400, "USR_09", "The Shipping Region ID is not number");
+    public static final Profile BAD_SHIPPING_REGION_ID   = new Profile(400, "USR_09", "The Shipping Region ID is not number");
     public static final Profile BAD_ID_NOT_NUMBER       = new Profile(400, "DEP_01", "The ID is not a number");
 
     public static final Profile BAD_PARAMETER           = new Profile(400, "COM_01", "Bad parameter");
     public static final Profile BAD_REQUEST             = new Profile(400, "COM_02", "Bad request");
     public static final Profile BAD_FACEBOOK_TOKEN      = new Profile(400, "USR_11", "Bad facebook token");
     public static final Profile SHOPPING_CART_IS_EMPTY = new Profile(400, "ORD_01", "Shopping cart is empty");
+    public static final String VALIDATION_CONSTRAINT_MESSAGE_PREFIX = "VALIDATION";
 
 
     public ValidationException(Profile profile, String field) {

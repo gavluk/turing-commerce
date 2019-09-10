@@ -6,32 +6,34 @@ import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class CustomerDetailsForm {
 
     @NotNull
     @JsonProperty("name")
+    @Size(max=50, message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_07:this field is too long")
     private String name;
 
     @NotNull
     // todo: complete the message -> payload -> CommonException idea to involve spring @Valid in controller params
-    @Email(message = "USR_03:The email is invalid", payload = {ValidationException.ProfileBuilder.class})
+    @Email(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_03:The email is invalid")
     @JsonProperty("email")
     private String email;
 
     @JsonProperty("day_phone")
     // inspired by: https://stackoverflow.com/questions/42104546/java-regular-expressions-to-validate-phone-numbers/42105140
-    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = "USR_06:this is an invalid phone number")
+    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_06:this is an invalid phone number")
     private String dayPhone;
 
     @JsonProperty("eve_phone")
     // inspired by: https://stackoverflow.com/questions/42104546/java-regular-expressions-to-validate-phone-numbers/42105140
-    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = "USR_06:this is an invalid phone number")
+    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_06:this is an invalid phone number")
     private String evePhone;
 
     @JsonProperty("mob_phone")
     // inspired by: https://stackoverflow.com/questions/42104546/java-regular-expressions-to-validate-phone-numbers/42105140
-    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = "USR_06:this is an invalid phone number")
+    @Pattern(regexp = "\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_06:this is an invalid phone number")
     private String mobPhone;
 
     public String getName() {

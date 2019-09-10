@@ -1,6 +1,7 @@
 package ua.com.gavluk.turing.ecommerce.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public class CreateOrderRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_02:The field(s) are/is required")
     @JsonProperty("cart_id")
     private UUID cartId;
 

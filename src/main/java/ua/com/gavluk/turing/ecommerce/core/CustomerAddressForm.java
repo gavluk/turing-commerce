@@ -1,6 +1,9 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
+
+import javax.validation.constraints.Positive;
 
 public class CustomerAddressForm {
 
@@ -23,6 +26,7 @@ public class CustomerAddressForm {
     private String country;
 
     @JsonProperty("shipping_region_id")
+    @Positive(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_09:The Shipping Region ID is not number")
     private Long shippingRegionId = 1L;
 
     public String getAddress1() {

@@ -1,6 +1,7 @@
 package ua.com.gavluk.turing.ecommerce.core;
 
 import org.springframework.security.core.parameters.P;
+import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 import ua.com.gavluk.turing.ecommerce.utils.CommonUtils;
 
 import javax.validation.constraints.Email;
@@ -10,8 +11,8 @@ import java.beans.ConstructorProperties;
 
 public class AuthenticationForm {
 
-    @NotBlank
-    @Email
+    @NotBlank(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_02:The field(s) are/is required")
+    @Email(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":USR_03:The email is invalid")
     private final String email;
 
     /*

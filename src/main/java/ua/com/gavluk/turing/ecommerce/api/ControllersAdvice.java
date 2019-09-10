@@ -7,17 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.firewall.RequestRejectedException;
-import org.springframework.security.web.header.writers.XContentTypeOptionsHeaderWriter;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ua.com.gavluk.turing.ecommerce.exceptions.AuthException;
@@ -120,9 +116,30 @@ public class ControllersAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(HttpServletRequest request, MethodArgumentNotValidException ex) {
         logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+
         BindingResult result = ex.getBindingResult();
         String badParams = result.getFieldErrors().stream().map(err -> err.getField()).collect(Collectors.joining(","));
-        CommonException commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
+
+        CommonException commonEx;
+        if (result.getFieldError().getDefaultMessage().startsWith(ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX)) {
+            String[] split = result.getFieldError().getDefaultMessage().split(":", 3);
+            if (split.length < 3)
+                commonEx = new ValidationException(
+                        ValidationException.BAD_PARAMETER,
+                        result.getFieldError().getField() + ":" + result.getFieldError().getDefaultMessage()
+                );
+            else
+                // must be like "VALIDATION:USR_XX:Some message"
+                commonEx = new ValidationException(new CommonException.Profile(
+                    HttpStatus.BAD_REQUEST.value(),
+                    split[1],
+                    split[2]
+                ), badParams);
+        }
+        else {
+            commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
+        }
+
         HashMap<String, CommonException> body = new HashMap<>();
         body.put("error", commonEx);
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));
@@ -133,9 +150,30 @@ public class ControllersAdvice {
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<Object> handleMethodArgumentNotValid(HttpServletRequest request, BindException ex) {
         logger.error("Error on " + request.getMethod() + " " + request.getRequestURI() + ":" + ex.getMessage(), ex);
+
         BindingResult result = ex.getBindingResult();
         String badParams = result.getFieldErrors().stream().map(err -> err.getField()).collect(Collectors.joining(","));
-        CommonException commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
+
+        CommonException commonEx;
+        if (result.getFieldError().getDefaultMessage().startsWith(ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX)) {
+            String[] split = result.getFieldError().getDefaultMessage().split(":", 3);
+            if (split.length < 3)
+                commonEx = new ValidationException(
+                        ValidationException.BAD_PARAMETER,
+                        result.getFieldError().getField() + ":" + result.getFieldError().getDefaultMessage()
+                );
+            else
+                // must be like "VALIDATION:USR_XX:Some message"
+                commonEx = new ValidationException(new CommonException.Profile(
+                        HttpStatus.BAD_REQUEST.value(),
+                        split[1],
+                        split[2]
+                ), badParams);
+        }
+        else {
+            commonEx = new ValidationException(ValidationException.BAD_PARAMETER, badParams);
+        }
+
         HashMap<String, CommonException> body = new HashMap<>();
         body.put("error", commonEx);
         return new ResponseEntity<>(body, HttpStatus.resolve(commonEx.getStatus()));

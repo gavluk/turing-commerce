@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.com.gavluk.turing.ecommerce.core.Department;
 import ua.com.gavluk.turing.ecommerce.core.ProductService;
 import ua.com.gavluk.turing.ecommerce.exceptions.NotFoundException;
+import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -26,7 +27,9 @@ public class DepartmensController {
     }
 
     @GetMapping("/{id}")
-    public Department findDepartmentById(@PathVariable @Positive Long id) throws NotFoundException {
+    public Department findDepartmentById(
+            @PathVariable @Positive(message = ValidationException.VALIDATION_CONSTRAINT_MESSAGE_PREFIX + ":DEP_01:The ID is not a number") Long id
+    ) throws NotFoundException {
         return this.service.findDepartmentById(id).orElseThrow(
                 ()-> new NotFoundException(NotFoundException.DEPARTMENT_NOT_FOUND)
         );

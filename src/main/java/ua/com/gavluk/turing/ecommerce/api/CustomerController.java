@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ua.com.gavluk.turing.ecommerce.core.Customer;
-import ua.com.gavluk.turing.ecommerce.core.CustomerAddressForm;
-import ua.com.gavluk.turing.ecommerce.core.CustomerDetailsForm;
-import ua.com.gavluk.turing.ecommerce.core.CustomerService;
+import ua.com.gavluk.turing.ecommerce.core.*;
 import ua.com.gavluk.turing.ecommerce.exceptions.ValidationException;
 
 import javax.validation.Valid;
@@ -33,6 +30,11 @@ public class CustomerController {
     @PutMapping("/address")
     public Customer updateCustomerAddress(@RequestBody @Valid CustomerAddressForm form, CustomerAuthentication authentication) throws ValidationException {
         return this.service.updateAddress(authentication.getCustomer(), form);
+    }
+
+    @PutMapping("/creditCard")
+    public Customer updateCreditCard(@RequestBody @Valid CreditCardForm form, CustomerAuthentication auth) {
+        return this.service.updateCreditCard(auth.getCustomer(), form);
     }
 
 }

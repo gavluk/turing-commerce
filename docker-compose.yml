@@ -1,0 +1,45 @@
+version: '3'
+services:
+  turing-ecommerce-backend:
+    build: .
+    depends_on:
+      - "turing-ecommerce-db"
+      - "turing-ecommerce-fake-smtp"
+    ports:
+      - "8080:8080"
+    networks:
+      - turing
+    environment:
+      SERVER_PORT: 8080
+      DB_URL: "jdbc:mysql://turing-ecommerce-db:3306/turing?autoreconnect=true"
+      DB_USER: turing
+      DB_PASS: 12345
+      SMTP_HOST: turing-ecommerce-fake-smtp
+      SMTP_PORT: 5025
+      STRIPE_API_KEY: sk_test_lomdOfxbm7QDgZWvR82UhV6D
+    #command: '/bin/sh -c "echo $$DB_URL"'
+  turing-ecommerce-db:
+    image: "mysql:5.7"
+    ports:
+      - "3306:3306"
+    networks:
+      - turing
+    volumes:
+      - ./docs/dump-for-dev.sql:/docker-entrypoint-initdb.d/dump.sql
+      #- turing_ecommerce_mysql_data:/var/lib/mysql # uncomment if need persist data from start to another start
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345"
+      MYSQL_DATABASE: "turing"
+      MYSQL_USER: "turing"
+      MYSQL_PASSWORD: "12345"
+  turing-ecommerce-fake-smtp:
+    image: "gessnerfl/fake-smtp-server:latest"
+    ports:
+      - "5025:5025"
+      - "5080:5080"
+    networks:
+      - turing
+networks:
+  turing:
+volumes:
+  turing_ecommerce_mysql_data:

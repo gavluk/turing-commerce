@@ -29,6 +29,9 @@ Summary:
 * there are some unit-test, which run on "build" (for now not all services covered)
 * there is Postman collection, which could be used both for integration testing and as easy demo for frontend developer
 
+**API DOCS**
+* [is here](./docs/API-docs.odt), left unchanged from challenge requirements 
+
 # Install
 
 ## Building the project 

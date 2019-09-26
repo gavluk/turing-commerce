@@ -20,8 +20,8 @@ services:
     #command: '/bin/sh -c "echo $$DB_URL"'
   turing-ecommerce-db:
     image: "mysql:5.7"
-    ports:
-      - "3306:3306"
+#    ports:
+#      - "3306:3306"
     networks:
       - turing
     volumes:

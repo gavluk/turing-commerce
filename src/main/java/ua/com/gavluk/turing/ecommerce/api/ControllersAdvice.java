@@ -33,11 +33,11 @@ public class ControllersAdvice {
 
     private Logger logger = LoggerFactory.getLogger(ControllersAdvice.class);
 
-    static class AuthenticationEntryPointImple implements AuthenticationEntryPoint {
+    static class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
         private final Logger logger;
 
-        public AuthenticationEntryPointImple() {
+        public AuthenticationEntryPointImpl() {
             this.logger = LoggerFactory.getLogger(this.getClass());
         }
 

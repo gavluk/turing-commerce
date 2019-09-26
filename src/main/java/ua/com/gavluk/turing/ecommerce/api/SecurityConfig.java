@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 // error handling by turing standard
-                .and().exceptionHandling().authenticationEntryPoint(new ControllersAdvice.AuthenticationEntryPointImple())
+                .and().exceptionHandling().authenticationEntryPoint(new ControllersAdvice.AuthenticationEntryPointImpl())
         ;
 
         // JWT authentication filter

@@ -23,7 +23,7 @@ class StripePaymentProviderTest {
         Map<String, Object> cardParams = new HashMap<String, Object>();
         cardParams.put("number", "4242424242424242");
         cardParams.put("exp_month", 9);
-        cardParams.put("exp_year", 2020);
+        cardParams.put("exp_year", 2033);
         cardParams.put("cvc", "314");
         tokenParams.put("card", cardParams);
 
